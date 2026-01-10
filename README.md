@@ -40,3 +40,6 @@ Visit `http://localhost:3000`.
 - `models/`: Database schemas (User, Proposal)
 - `routes/`: API Enpoints (Auth, Generator, Income)
 - `core/`: Config & AI logic
+
+## Troubleshooting
+- **Vercel 404**: Ensure "Root Directory" is set to `frontend` in Vercel Project Settings and **Redeploy**.
