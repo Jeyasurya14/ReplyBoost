@@ -1,13 +1,12 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.models.user import UserCreate, UserLogin, UserResponse, UserInDB, UserProfile
-from app.core.security import get_password_hash, verify_password, create_access_token
+from app.core.security import get_password_hash, verify_password, create_access_token, oauth2_scheme
 from app.core.db import db
 from datetime import timedelta
 from bson import ObjectId
 
 router = APIRouter()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 @router.post("/register", response_model=dict)
 def register(user: UserCreate):

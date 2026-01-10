@@ -3,8 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(title="ReplyBoost API")
 
+import os
+
 origins = [
     "http://localhost:3000",
+    os.getenv("FRONTEND_URL", "*"), # Allow production URL
 ]
 
 app.add_middleware(
