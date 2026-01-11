@@ -78,16 +78,19 @@ export default function Dashboard() {
     return (
         <div className="space-y-8 animate-fade-in pb-10">
             {/* Welcome Section */}
-            <div className="flex flex-col md:flex-row justify-between items-end gap-4">
-                <div>
-                    <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-                        Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{user?.email?.split('@')[0] || 'Freelancer'}</span>
-                    </h1>
-                    <p className="text-slate-400 text-lg">Here&apos;s your cosmic performance overview.</p>
-                </div>
-                <div className="glass-panel px-4 py-2 rounded-full border border-emerald-500/20 flex items-center gap-3 bg-emerald-500/5">
-                    <div className="min-w-[8px] min-h-[8px] rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                    <span className="text-emerald-300 text-sm font-medium">System Operational</span>
+            <div className="relative overflow-hidden rounded-3xl p-8 mb-8 glass-panel border border-indigo-500/20">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] -mr-20 -mt-20 pointer-events-none"></div>
+                <div className="relative z-10 flex flex-col md:flex-row justify-between items-end gap-4">
+                    <div>
+                        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
+                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{user?.email?.split('@')[0] || 'Freelancer'}</span>
+                        </h1>
+                        <p className="text-slate-300 text-lg">Your cosmic command center is ready.</p>
+                    </div>
+                    <div className="glass-panel px-4 py-2 rounded-full border border-emerald-500/20 flex items-center gap-3 bg-emerald-500/5 backdrop-blur-md">
+                        <div className="min-w-[8px] min-h-[8px] rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                        <span className="text-emerald-300 text-sm font-medium">System Operational</span>
+                    </div>
                 </div>
             </div>
 
@@ -128,14 +131,14 @@ export default function Dashboard() {
                     },
                 ].map((item, idx) => (
                     <Col xs={24} sm={12} lg={6} key={idx}>
-                        <div className="glass-card group relative overflow-hidden p-6 rounded-3xl h-full">
+                        <div className="glass-card group relative overflow-hidden p-6 rounded-3xl h-full border border-white/5 hover:border-white/10 transition-all duration-300 hover:-translate-y-1">
                             <div className={`absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br ${item.gradient} opacity-10 blur-[40px] group-hover:opacity-20 transition-opacity duration-500`}></div>
 
                             <div className="flex justify-between items-start mb-4 relative z-10">
                                 <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg shadow-${item.color}-500/20 group-hover:scale-110 transition-transform duration-300`}>
                                     {item.icon}
                                 </div>
-                                <div className="text-slate-500 hover:text-white cursor-pointer transition-colors bg-white/5 p-2 rounded-lg hover:bg-white/10">
+                                <div className="text-slate-500 hover:text-white cursor-pointer transition-colors bg-white/5 p-2 rounded-lg hover:bg-white/10 backdrop-blur-sm">
                                     <RiseOutlined />
                                 </div>
                             </div>
@@ -144,7 +147,7 @@ export default function Dashboard() {
                                 <div className="text-4xl font-bold text-white mb-1 tracking-tight">{item.value}</div>
                                 <div className="text-slate-400 font-medium text-sm uppercase tracking-wider">{item.title}</div>
                                 <div className="mt-4 flex items-center gap-2 text-xs">
-                                    <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">
+                                    <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium border border-emerald-500/10">
                                         +12%
                                     </span>
                                     <span className="text-slate-500">{item.subtext}</span>
@@ -159,8 +162,8 @@ export default function Dashboard() {
             <Row gutter={[24, 24]}>
                 {/* Chart */}
                 <Col xs={24} lg={16}>
-                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col relative overflow-hidden border border-white/10">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none"></div>
 
                         <div className="flex justify-between items-center mb-8 relative z-10">
                             <div>
@@ -168,8 +171,8 @@ export default function Dashboard() {
                                 <p className="text-slate-500 text-sm">Proposals sent over the last 7 days</p>
                             </div>
                             <div className="flex gap-2">
-                                <span className="w-3 h-3 rounded-full bg-indigo-500"></span>
-                                <span className="text-xs text-slate-400">Sent</span>
+                                <span className="w-3 h-3 rounded-full bg-indigo-500 ring-2 ring-indigo-500/20"></span>
+                                <span className="text-xs text-slate-400 font-medium">Sent</span>
                             </div>
                         </div>
 
@@ -213,7 +216,7 @@ export default function Dashboard() {
                                             strokeWidth={4}
                                             fillOpacity={1}
                                             fill="url(#colorSent)"
-                                            activeDot={{ r: 8, strokeWidth: 0, fill: '#fff', stroke: '#6366f1' }}
+                                            activeDot={{ r: 6, strokeWidth: 0, fill: '#fff', stroke: '#6366f1' }}
                                         />
                                     </AreaChart>
                                 </ResponsiveContainer>
@@ -228,16 +231,16 @@ export default function Dashboard() {
 
                 {/* Recent Activity */}
                 <Col xs={24} lg={8}>
-                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col border-t border-white/10">
-                        <div className="flex justify-between items-center mb-6">
+                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col border border-white/10 relative overflow-hidden">
+                        <div className="flex justify-between items-center mb-6 relative z-10">
                             <h3 className="text-xl font-bold text-white">Recent Activity</h3>
-                            <Link href="/dashboard/proposals" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">View All</Link>
+                            <Link href="/dashboard/proposals" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-3 py-1 rounded-full">View All</Link>
                         </div>
 
-                        <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+                        <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar relative z-10">
                             {recentActivity.length > 0 ? (
                                 recentActivity.map((proposal, i) => (
-                                    <div key={i} className="group relative p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+                                    <div key={i} className="group relative p-4 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 transition-all duration-300 hover:border-white/10 cursor-pointer">
                                         <div className="flex gap-4">
                                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center shrink-0 border border-indigo-500/10 group-hover:border-indigo-500/30 transition-colors">
                                                 <SendOutlined className="text-indigo-400 group-hover:scale-110 transition-transform" />
