@@ -94,19 +94,93 @@ export default function ProposalsPage() {
     ];
 
     return (
-        <div>
-            <div className="mb-6">
-                <Title level={2}>Proposal History</Title>
+        <div className="max-w-6xl mx-auto space-y-8 animate-fade-in pb-12">
+            <div>
+                <Title level={2} className="!text-white !mb-2 tracking-tight">Proposal History</Title>
+                <p className="text-slate-400 text-lg">Track and manage your generated proposals.</p>
             </div>
-            <Card className="shadow-sm rounded-xl overflow-hidden border-0">
-                <Table
-                    columns={columns}
-                    dataSource={proposals}
-                    rowKey="id"
-                    loading={loading}
-                    pagination={{ pageSize: 10 }}
-                />
-            </Card>
+
+            <div className="glass-panel p-1 rounded-3xl overflow-hidden border border-white/10 relative">
+                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
+
+                <div className="p-6 md:p-8 relative z-10">
+                    <Table
+                        columns={columns}
+                        dataSource={proposals}
+                        rowKey="id"
+                        loading={loading}
+                        pagination={{
+                            pageSize: 10,
+                            className: "custom-pagination"
+                        }}
+                        className="custom-table"
+                        rowClassName="custom-row"
+                    />
+                </div>
+            </div>
+
+            <style jsx global>{`
+                .custom-table .ant-table {
+                    background: transparent !important;
+                    color: white !important;
+                }
+                .custom-table .ant-table-thead > tr > th {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    color: #94a3b8 !important;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+                    font-weight: 600 !important;
+                    text-transform: uppercase !important;
+                    font-size: 0.75rem !important;
+                    letter-spacing: 0.05em !important;
+                }
+                .custom-table .ant-table-tbody > tr > td {
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+                    color: #e2e8f0 !important;
+                    transition: all 0.2s !important;
+                }
+                .custom-table .ant-table-tbody > tr:hover > td {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                }
+                .custom-row:hover {
+                    cursor: pointer;
+                }
+                
+                /* Pagination */
+                .custom-pagination .ant-pagination-item {
+                    background: transparent !important;
+                    border-color: rgba(255, 255, 255, 0.2) !important;
+                }
+                .custom-pagination .ant-pagination-item a {
+                    color: #94a3b8 !important;
+                }
+                .custom-pagination .ant-pagination-item-active {
+                    background: rgba(99, 102, 241, 0.2) !important;
+                    border-color: #6366f1 !important;
+                }
+                .custom-pagination .ant-pagination-item-active a {
+                    color: white !important;
+                }
+                .custom-pagination .ant-pagination-prev .ant-pagination-item-link,
+                .custom-pagination .ant-pagination-next .ant-pagination-item-link {
+                    background: transparent !important;
+                    border-color: rgba(255, 255, 255, 0.2) !important;
+                    color: #94a3b8 !important;
+                }
+                
+                /* Select in Table */
+                .ant-select-dropdown {
+                    background-color: #0f172a !important;
+                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+                }
+                .ant-select:not(.ant-select-customize-input) .ant-select-selector {
+                    background-color: transparent !important;
+                    border-color: rgba(255, 255, 255, 0.2) !important;
+                    color: #e2e8f0 !important;
+                }
+                .ant-select-arrow {
+                    color: rgba(255, 255, 255, 0.5) !important;
+                }
+            `}</style>
         </div>
     );
 }
