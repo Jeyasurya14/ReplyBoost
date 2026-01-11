@@ -7,6 +7,7 @@ import os
 
 origins = [
     "http://localhost:3000",
+    "https://replyboost.learn-made.in", # Custom Domain
     os.getenv("FRONTEND_URL", "*"), # Allow production URL
 ]
 
