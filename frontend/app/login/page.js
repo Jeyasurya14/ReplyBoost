@@ -19,11 +19,10 @@ export default function Login() {
         setLoading(true);
         setError('');
         try {
-            const formData = new FormData();
-            formData.append('username', values.email); // OAuth2 expects 'username'
-            formData.append('password', values.password);
-
-            const response = await api.post('/auth/login', formData);
+            const response = await api.post('/auth/login', {
+                email: values.email,
+                password: values.password
+            });
 
             localStorage.setItem('token', response.data.access_token);
             message.success('Welcome back!');
