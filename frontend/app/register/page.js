@@ -30,6 +30,11 @@ export default function Register() {
         }
     };
 
+    const handleOAuth = (provider) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        window.location.href = `${apiUrl}/auth/login/${provider}`;
+    };
+
     return (
         <div className="min-h-screen flex bg-[#030712] text-slate-200 font-sans">
             {/* Left Side - Cosmic Branding */}
@@ -130,10 +135,16 @@ export default function Register() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Button className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2">
+                        <Button
+                            onClick={() => handleOAuth('google')}
+                            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2"
+                        >
                             <GoogleOutlined /> Google
                         </Button>
-                        <Button className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2">
+                        <Button
+                            onClick={() => handleOAuth('github')}
+                            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2"
+                        >
                             <GithubOutlined /> GitHub
                         </Button>
                     </div>

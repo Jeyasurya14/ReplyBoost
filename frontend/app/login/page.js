@@ -48,8 +48,14 @@ export default function Login() {
         }
     };
 
+    const handleOAuth = (provider) => {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+        window.location.href = `${apiUrl}/auth/login/${provider}`;
+    };
+
     return (
         <div className="min-h-screen flex bg-[#030712] text-slate-200 font-sans">
+
             {/* Left Side - Cosmic Branding */}
             <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-slate-900 justify-center items-center p-12">
                 <div className="absolute inset-0 bg-indigo-900/20 z-0"></div>
@@ -151,10 +157,16 @@ export default function Login() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                        <Button className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2">
+                        <Button
+                            onClick={() => handleOAuth('google')}
+                            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2"
+                        >
                             <GoogleOutlined /> Google
                         </Button>
-                        <Button className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2">
+                        <Button
+                            onClick={() => handleOAuth('github')}
+                            className="h-11 bg-white/5 border-white/10 text-white hover:bg-white/10 hover:border-white/20 hover:text-white rounded-xl flex items-center justify-center gap-2"
+                        >
                             <GithubOutlined /> GitHub
                         </Button>
                     </div>
