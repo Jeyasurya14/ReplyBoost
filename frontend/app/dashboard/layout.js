@@ -71,7 +71,7 @@ export default function DashboardLayout({ children }) {
 
     return (
         <AuthGuard>
-            <Layout className="min-h-screen font-sans">
+            <Layout className="min-h-screen font-sans" style={{ minHeight: '100vh' }}>
                 <Sider
                     trigger={null}
                     collapsible
@@ -139,7 +139,7 @@ export default function DashboardLayout({ children }) {
                     <Content
                         className="p-6 md:p-8 overflow-y-auto bg-slate-50/50"
                         style={{
-                            minHeight: 280,
+                            minHeight: 'calc(100vh - 80px)',
                         }}
                     >
                         {children}
