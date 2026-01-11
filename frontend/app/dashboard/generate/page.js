@@ -34,6 +34,8 @@ export default function GeneratePage() {
     const [copied, setCopied] = useState(false);
     const [signals, setSignals] = useState([]);
     const [strength, setStrength] = useState(0);
+    const [breakdown, setBreakdown] = useState([]);
+    const [remaining, setRemaining] = useState(null);
 
     // Effect: Detect Job Signals
     useEffect(() => {
@@ -50,45 +52,54 @@ export default function GeneratePage() {
         setSignals(found);
     }, [jobDescription]);
 
-    // Effect: Simulate Strength Meter
-    useEffect(() => {
-        if (!proposal) {
-            setStrength(0);
-            return;
-        }
-        // Simple heuristic for demo
-        let score = 50;
-        if (proposal.length > 200) score += 10;
-        if (proposal.includes('portfolio') || proposal.includes('work')) score += 10;
-        if (proposal.includes('?')) score += 10; // Question asked
-        if (signals.length > 0) score += 10;
-        setStrength(Math.min(98, score));
-    }, [proposal, signals]);
+    // Strength calculated by backend
 
     const handleGenerate = async (refinement = null) => {
-        if (!jobDescription.trim()) {
-            message.error("Please paste the job description.");
-            return;
-        }
         setLoading(true);
         try {
-            // Construct advanced prompt for the backend
-            let systemInstruction = `\n\n[SYSTEM: Use '${framework}' framework. Tone: ${tone < 30 ? 'Very Friendly' : tone > 70 ? 'Very Direct' : 'Professional'}. CTA: ${ctaStyle}.`;
-            if (refinement) systemInstruction += ` Refinement: ${refinement}.`;
-            systemInstruction += `]`;
+            let response;
 
-            // We append this to the JD to "trick" the backend for now without changing API schema
-            const promptPayload = jobDescription + systemInstruction;
+            if (refinement) {
+                // Call Refine Endpoint
+                response = await api.post('/refine', {
+                    proposal_text: proposal,
+                    instruction: refinement
+                });
+                setProposal(response.data.refined_text);
+                message.success("Proposal refined!");
+            } else {
+                if (!jobDescription.trim()) {
+                    message.error("Please paste the job description.");
+                    setLoading(false);
+                    return;
+                }
 
-            const response = await api.post('/generate', {
-                job_description: promptPayload,
-                platform: platform
-            });
-            setProposal(response.data.proposal_text);
-            if (!refinement) message.success("Proposal generated!");
-            else message.success("Refined proposal!");
+                // Call Generate Endpoint
+                response = await api.post('/generate', {
+                    job_description: jobDescription,
+                    platform: platform,
+                    framework: framework,
+                    cta_style: ctaStyle,
+                    tone_level: tone
+                });
+
+                const { proposal_text, signals: backendSignals, analysis, remaining_credits } = response.data;
+
+                setProposal(proposal_text);
+                setStrength(analysis.score);
+                setBreakdown(analysis.breakdown); // Assuming backend sends this list
+                // setSignals(backendSignals); // Optional: Overwrite frontend signals if backend is smarter
+                setRemaining(remaining_credits);
+
+                message.success(`Generated! ${remaining_credits} credits left.`);
+            }
         } catch (error) {
-            message.error("Failed to generate proposal.");
+            console.error(error);
+            if (error.response?.status === 403) {
+                message.error("Daily limit reached. Upgrade to Pro!");
+            } else {
+                message.error("Failed to generate/refine. Check connection.");
+            }
         } finally {
             setLoading(false);
         }
