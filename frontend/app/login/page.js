@@ -30,7 +30,22 @@ export default function Login() {
             router.push('/dashboard');
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.detail || 'Login failed');
+            let errorMessage = 'Login failed';
+            const detail = err.response?.data?.detail;
+
+            if (detail) {
+                if (typeof detail === 'string') {
+                    errorMessage = detail;
+                } else if (Array.isArray(detail)) {
+                    // Handle Pydantic validation errors (array of objects)
+                    errorMessage = detail.map(e => e.msg || JSON.stringify(e)).join(', ');
+                } else if (typeof detail === 'object') {
+                    // Handle single object error
+                    errorMessage = detail.msg || JSON.stringify(detail);
+                }
+            }
+
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
