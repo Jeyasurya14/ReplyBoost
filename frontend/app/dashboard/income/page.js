@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, Table, Button, Modal, Form, Input, DatePicker, Select, InputNumber, Row, Col, Typography, Statistic, message } from 'antd';
-import { PlusOutlined, DollarOutlined } from '@ant-design/icons';
+import { PlusOutlined, DollarOutlined, ArrowUpOutlined } from '@ant-design/icons';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import api from '@/lib/api';
 import moment from 'moment';
