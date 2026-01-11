@@ -129,7 +129,7 @@ export default function DashboardLayout({ children }) {
                                 <Tag color="blue" className="m-0 font-semibold border-none bg-blue-100 text-blue-700">Free Team</Tag>
                             </div>
 
-                            <Button type="primary" size="small" className="font-medium bg-indigo-600">
+                            <Button type="primary" size="small" className="font-medium bg-indigo-600 shadow-indigo-200 shadow-sm hover:!bg-indigo-700">
                                 Upgrade
                             </Button>
 

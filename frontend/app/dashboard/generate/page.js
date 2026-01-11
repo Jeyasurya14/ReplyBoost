@@ -271,50 +271,79 @@ export default function GeneratePage() {
                                 </div>
 
                                 {/* Insights & Refinement */}
-                                <Row gutter={[24, 24]}>
-                                    <Col span={24} xl={12}>
-                                        <div className="saas-card p-6 h-full flex flex-col justify-center">
-                                            <h4 className="saas-label mb-4">Reply Strength</h4>
-                                            <div className="flex items-end gap-3 mb-2">
-                                                <span className="text-4xl font-bold text-slate-900">{strength}</span>
-                                                <span className="text-slate-400 mb-1">/ 100</span>
-                                            </div>
-                                            <Progress
-                                                percent={strength}
-                                                showInfo={false}
-                                                strokeColor={strength > 80 ? '#10b981' : strength > 60 ? '#f59e0b' : '#ef4444'}
-                                                trailColor="#f1f5f9"
-                                                className="mb-4"
-                                            />
-                                            <div className="space-y-2">
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                    <CheckCircleFilled className="text-emerald-500" /> Uses job keywords
-                                                </div>
-                                                <div className="flex items-center gap-2 text-sm text-slate-600">
-                                                    <CheckCircleFilled className="text-emerald-500" /> Clear CTA present
-                                                </div>
-                                            </div>
+                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 pb-6">
+                                    <div className="saas-card p-6 flex flex-col justify-center border-slate-200 shadow-sm">
+                                        <h4 className="saas-label mb-4">Reply Strength</h4>
+                                        <div className="flex items-end gap-3 mb-2">
+                                            <span className="text-4xl font-bold text-slate-900">{strength}</span>
+                                            <span className={`text-sm font-semibold mb-2 px-2 py-0.5 rounded-full ${strength > 80 ? 'bg-emerald-100 text-emerald-700' : strength > 60 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>
+                                                {strength > 80 ? 'Strong' : strength > 60 ? 'Average' : 'Weak'}
+                                            </span>
                                         </div>
-                                    </Col>
-                                    <Col span={24} xl={12}>
-                                        <div className="saas-card p-6 h-full bg-slate-50 border-slate-200">
-                                            <h4 className="saas-label mb-3">Quick Refinement</h4>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <Button icon={<CompressOutlined />} size="middle" onClick={() => handleGenerate('Make it shorter')}>Shorter</Button>
-                                                <Button icon={<FireOutlined />} size="middle" onClick={() => handleGenerate('Make it more urgent')}>Urgent</Button>
-                                                <Button icon={<AlignLeftOutlined />} size="middle" onClick={() => handleGenerate('Make it professional')}>Formal</Button>
-                                                <Button icon={<RocketOutlined />} size="middle" onClick={() => handleGenerate('Improve CTA')}>Better CTA</Button>
-                                            </div>
+                                        <Progress
+                                            percent={strength}
+                                            showInfo={false}
+                                            strokeColor={strength > 80 ? '#10b981' : strength > 60 ? '#f59e0b' : '#ef4444'}
+                                            trailColor="#f1f5f9"
+                                            className="mb-4"
+                                        />
+                                        <div className="space-y-2">
+                                            {breakdown.length > 0 ? breakdown.map((item, i) => (
+                                                <div key={i} className="flex items-center gap-2 text-sm text-slate-600">
+                                                    <CheckCircleFilled className="text-emerald-500" /> {item}
+                                                </div>
+                                            )) : (
+                                                <>
+                                                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                                                        <CheckCircleFilled className="text-emerald-500" /> Analysis pending...
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
-                                    </Col>
-                                </Row>
+                                    </div>
+
+                                    <div className="saas-card p-6 bg-slate-50 border-slate-200">
+                                        <h4 className="saas-label mb-3">Quick Refinement</h4>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            <Button icon={<CompressOutlined />} size="middle" onClick={() => handleGenerate('Make it shorter')} className="text-xs bg-white border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200">Shorter</Button>
+                                            <Button icon={<FireOutlined />} size="middle" onClick={() => handleGenerate('Make it more urgent')} className="text-xs bg-white border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200">Urgent</Button>
+                                            <Button icon={<AlignLeftOutlined />} size="middle" onClick={() => handleGenerate('Make it professional')} className="text-xs bg-white border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200">Formal</Button>
+                                            <Button icon={<RocketOutlined />} size="middle" onClick={() => handleGenerate('Improve CTA')} className="text-xs bg-white border-slate-200 text-slate-600 hover:text-indigo-600 hover:border-indigo-200">Better CTA</Button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* "Why This Works" Trust Panel */}
+                                <div className="bg-indigo-50/50 rounded-xl p-6 border border-indigo-100">
+                                    <h4 className="flex items-center gap-2 font-bold text-indigo-900 mb-3 text-sm uppercase tracking-wide">
+                                        <SafetyCertificateOutlined className="text-lg" /> Why this works
+                                    </h4>
+                                    <ul className="space-y-2">
+                                        <li className="flex gap-3 text-sm text-slate-700">
+                                            <span className="text-indigo-400">•</span>
+                                            <span>Starts with a <strong>hook</strong> that mirrors the client&apos;s problem, proving you read the job.</span>
+                                        </li>
+                                        <li className="flex gap-3 text-sm text-slate-700">
+                                            <span className="text-indigo-400">•</span>
+                                            <span>Uses a <strong>{ctaStyle.toLowerCase()} Call to Action</strong> to lower friction for a reply.</span>
+                                        </li>
+                                        <li className="flex gap-3 text-sm text-slate-700">
+                                            <span className="text-indigo-400">•</span>
+                                            <span>Keeps the focus on <strong>results</strong> rather than generic introductions.</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         ) : (
-                            <div className="h-full flex items-center justify-center opacity-50 p-12 text-center border-2 border-dashed border-slate-200 rounded-3xl">
-                                <div>
-                                    <RobotOutlined className="text-6xl text-slate-300 mb-6" />
-                                    <h3 className="text-xl font-bold text-slate-400">Ready to Generate</h3>
-                                    <p className="text-slate-400 max-w-xs mx-auto mt-2">Configure your preferences on the left and hit generate to see the magic.</p>
+                            <div className="h-full flex items-center justify-center p-12 text-center bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200/60">
+                                <div className="max-w-md">
+                                    <div className="bg-white p-4 rounded-full shadow-sm inline-block mb-6">
+                                        <RobotOutlined className="text-4xl text-indigo-200" />
+                                    </div>
+                                    <h3 className="text-lg font-bold text-slate-700 mb-2">Ready to Generate</h3>
+                                    <p className="text-slate-500 leading-relaxed">
+                                        Paste a job description on the left to get a structured, high-converting proposal reply.
+                                    </p>
                                 </div>
                             </div>
                         )}
