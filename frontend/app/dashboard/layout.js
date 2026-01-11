@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Layout, Menu, Button, theme, Avatar, Dropdown, Typography } from 'antd';
+import { Layout, Menu, Button, theme, Avatar, Dropdown, Typography, Badge } from 'antd';
 import {
     AppstoreOutlined,
     ThunderboltOutlined,
@@ -12,7 +12,8 @@ import {
     LogoutOutlined,
     MenuFoldOutlined,
     MenuUnfoldOutlined,
-    RocketOutlined
+    RocketOutlined,
+    BellOutlined
 } from '@ant-design/icons';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -25,9 +26,6 @@ export default function DashboardLayout({ children }) {
     const [collapsed, setCollapsed] = useState(false);
     const router = useRouter();
     const pathname = usePathname();
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
 
     const handleLogout = () => {
         localStorage.removeItem('token');
@@ -35,10 +33,12 @@ export default function DashboardLayout({ children }) {
     };
 
     const userMenu = (
-        <Menu items={[
-            { key: 'profile', icon: <UserOutlined />, label: 'Profile' },
-            { key: 'logout', icon: <LogoutOutlined />, label: 'Logout', danger: true, onClick: handleLogout },
-        ]} />
+        <Menu
+            className="glass-panel border border-white/10 !bg-[#111827] text-slate-200"
+            items={[
+                { key: 'profile', icon: <UserOutlined />, label: 'Profile' },
+                { key: 'logout', icon: <LogoutOutlined />, label: 'Logout', danger: true, onClick: handleLogout },
+            ]} />
     );
 
     const menuItems = [
@@ -71,73 +71,86 @@ export default function DashboardLayout({ children }) {
 
     return (
         <AuthGuard>
-            <Layout className="min-h-screen font-sans" style={{ minHeight: '100vh' }}>
+            <Layout className="min-h-screen font-sans bg-[#030712]">
                 <Sider
                     trigger={null}
                     collapsible
                     collapsed={collapsed}
-                    className="shadow-xl z-20"
+                    className="!bg-slate-900/50 backdrop-blur-xl border-r border-white/5 z-20"
                     width={260}
-                    style={{ background: '#fff' }}
                 >
-                    <div className="flex items-center justify-center h-20 border-b border-gray-100/50 mx-4 mb-2">
-                        <div className={`transition-all duration-300 flex items-center gap-2 text-indigo-600 ${collapsed ? 'justify-center' : ''}`}>
-                            <RocketOutlined className="text-2xl" />
-                            {!collapsed && <span className="font-bold text-xl tracking-tight text-slate-800">ReplyBoost</span>}
+                    {/* Logo Area */}
+                    <div className={`flex items-center h-20 mx-6 mb-2 border-b border-white/5 overflow-hidden ${collapsed ? 'justify-center px-0' : ''}`}>
+                        <div className="flex items-center gap-3 text-indigo-400">
+                            <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center shrink-0">
+                                <RocketOutlined className="text-lg" />
+                            </div>
+                            {!collapsed && (
+                                <span className="font-bold text-xl tracking-tight text-white animate-in fade-in duration-300">ReplyBoost</span>
+                            )}
                         </div>
                     </div>
+
+                    {/* Menu */}
                     <Menu
-                        theme="light"
                         mode="inline"
                         defaultSelectedKeys={[pathname]}
                         selectedKeys={[pathname]}
                         items={menuItems}
-                        className="border-none px-3"
+                        className="bg-transparent border-none px-3"
                         itemIcon={<span className="text-lg" />}
                         style={{
-                            fontSize: '15px',
-                            fontWeight: 500,
+                            background: 'transparent',
+                            color: '#94a3b8' // Slate 400
                         }}
+                        theme="dark" // AntD dark theme for menu
                     />
+
+                    {/* Upgrade Card */}
                     {!collapsed && (
                         <div className="absolute bottom-8 left-0 w-full px-6">
-                            <div className="bg-indigo-50 rounded-xl p-4 text-center">
-                                <Text className="block text-indigo-900 font-semibold mb-1">Pro Plan</Text>
-                                <Text className="block text-indigo-600/70 text-xs mb-3">Get unlimited generates</Text>
-                                <Button size="small" type="primary" className="bg-indigo-600 w-full rounded-lg shadow-md shadow-indigo-200 border-none">Upgrade</Button>
+                            <div className="bg-gradient-to-br from-indigo-900/50 to-slate-900/50 border border-white/5 rounded-2xl p-5 text-center relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500/20 rounded-full blur-[40px] -mr-10 -mt-10"></div>
+                                <Text className="block text-white font-bold mb-1 relative z-10">Pro Plan</Text>
+                                <Text className="block text-indigo-200/60 text-xs mb-4 relative z-10">Unlimited generates & analytics</Text>
+                                <Button size="small" type="primary" className="bg-indigo-600 w-full rounded-lg border-none hover:bg-indigo-500 shadow-lg shadow-indigo-900/20 h-8 font-medium">Upgrade Now</Button>
                             </div>
                         </div>
                     )}
                 </Sider>
-                <Layout>
-                    <Header style={{ padding: 0, background: colorBgContainer }} className="flex justify-between items-center px-6 shadow-sm border-b border-gray-100 z-10 sticky top-0 h-20">
+
+                <Layout className="bg-transparent">
+                    {/* Header */}
+                    <Header className="bg-slate-900/50 backdrop-blur-md flex justify-between items-center px-6 md:px-8 border-b border-white/5 sticky top-0 z-10 h-20">
                         <Button
                             type="text"
                             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                             onClick={() => setCollapsed(!collapsed)}
-                            style={{
-                                fontSize: '18px',
-                                width: 48,
-                                height: 48,
-                            }}
-                            className="text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl"
+                            className="text-slate-400 hover:text-white hover:bg-white/5 rounded-xl w-10 h-10 flex items-center justify-center p-0"
                         />
-                        <div className="flex items-center gap-4">
-                            <Button type="text" shape="circle" icon={<ThunderboltOutlined />} className="text-slate-500 hover:text-indigo-600 hover:bg-indigo-50" />
-                            <div className="h-8 w-[1px] bg-slate-200 mx-2"></div>
+
+                        <div className="flex items-center gap-6">
+                            <Badge dot color="indigo" offset={[-4, 4]}>
+                                <Button type="text" shape="circle" icon={<BellOutlined />} className="text-slate-400 hover:text-white hover:bg-white/5" />
+                            </Badge>
+
+                            <div className="h-6 w-[1px] bg-white/10"></div>
+
                             <Dropdown overlay={userMenu} placement="bottomRight" trigger={['click']}>
-                                <div className="flex items-center gap-3 cursor-pointer hover:bg-gray-50 pl-2 pr-4 py-1.5 rounded-full transition-all border border-transparent hover:border-gray-200">
-                                    <Avatar size="large" icon={<UserOutlined />} className="bg-gradient-to-br from-indigo-500 to-purple-500" />
+                                <div className="flex items-center gap-3 cursor-pointer group">
+                                    <Avatar size="default" style={{ backgroundColor: '#6366f1' }} icon={<UserOutlined />} className="shadow-lg shadow-indigo-500/30" />
                                     <div className="hidden md:block text-left">
-                                        <div className="text-sm font-semibold text-slate-700 leading-tight">Freelancer</div>
-                                        <div className="text-xs text-slate-400">Basic Plan</div>
+                                        <div className="text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">Freelancer</div>
+                                        <div className="text-[10px] text-slate-500 uppercase tracking-wider font-bold">Basic Plan</div>
                                     </div>
                                 </div>
                             </Dropdown>
                         </div>
                     </Header>
+
+                    {/* Content */}
                     <Content
-                        className="p-6 md:p-8 overflow-y-auto bg-slate-50/50"
+                        className="p-6 md:p-8 overflow-y-auto"
                         style={{
                             minHeight: 'calc(100vh - 80px)',
                         }}

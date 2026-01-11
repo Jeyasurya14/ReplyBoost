@@ -6,7 +6,9 @@ import { motion } from 'framer-motion';
 
 const { Text } = Typography;
 
-export default function TrustLogos() {
+export default function TrustLogos({ theme = 'light' }) {
+    const isDark = theme === 'dark';
+
     const logos = [
         { name: 'Upwork', color: '#14a800' },
         { name: 'Fiverr', color: '#1dbf73' },
@@ -16,12 +18,12 @@ export default function TrustLogos() {
     ];
 
     return (
-        <section className="py-10 border-b border-slate-100 bg-slate-50/50">
+        <section className={`py-10 border-b ${isDark ? 'border-white/5 bg-transparent' : 'border-slate-100 bg-slate-50/50'}`}>
             <div className="max-w-7xl mx-auto px-6 text-center">
-                <Text className="block text-slate-400 font-medium mb-6 uppercase tracking-widest text-xs">
+                <Text className={`block font-medium mb-6 uppercase tracking-widest text-xs ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                     Trusted by freelancers on
                 </Text>
-                <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
+                <div className={`flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-500`}>
                     {logos.map((logo, idx) => (
                         <motion.div
                             key={idx}
@@ -32,7 +34,6 @@ export default function TrustLogos() {
                             className="text-2xl font-bold font-sans flex items-center gap-2"
                             style={{ color: logo.color }}
                         >
-                            {/* Fallback to text if no SVG, using color to branding */}
                             <span>{logo.name}</span>
                         </motion.div>
                     ))}

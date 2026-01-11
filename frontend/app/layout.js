@@ -1,8 +1,10 @@
-import { Inter } from "next/font/google";
+import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { AntdRegistry } from '@ant-design/nextjs-registry';
+import { ConfigProvider, theme } from 'antd';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata = {
   title: "ReplyBoost - Get More Freelance Replies",
@@ -12,8 +14,20 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <AntdRegistry>{children}</AntdRegistry>
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-[#030712] text-slate-50 relative selection:bg-indigo-500/30 selection:text-indigo-200`}>
+        <ConfigProvider
+          theme={{
+            algorithm: theme.darkAlgorithm,
+            token: {
+              colorPrimary: '#6366f1',
+              fontFamily: 'var(--font-inter)',
+            },
+          }}
+        >
+          <AntdRegistry>
+            {children}
+          </AntdRegistry>
+        </ConfigProvider>
       </body>
     </html>
   );

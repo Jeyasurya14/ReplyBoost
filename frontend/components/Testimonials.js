@@ -28,17 +28,19 @@ const testimonials = [
     }
 ];
 
-export default function Testimonials() {
+export default function Testimonials({ theme = 'light' }) {
+    const isDark = theme === 'dark';
+
     return (
-        <section className="py-24 bg-slate-50">
+        <section className={`py-24 ${isDark ? 'bg-transparent' : 'bg-slate-50'}`}>
             <div className="max-w-7xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <Title level={2} className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+                    <h2 className={`text-3xl md:text-4xl font-bold mb-4 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         Loved by Freelancers Worldwide
-                    </Title>
-                    <Text className="text-slate-500 text-lg">
+                    </h2>
+                    <p className={`text-lg ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                         Don&apos;t just take our word for it. See what others are saying.
-                    </Text>
+                    </p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -50,21 +52,24 @@ export default function Testimonials() {
                             viewport={{ once: true }}
                             transition={{ delay: idx * 0.2 }}
                         >
-                            <Card className="h-full border-none shadow-sm hover:shadow-xl transition-shadow duration-300 rounded-2xl glass">
-                                <div className="flex gap-1 text-yellow-500 mb-4">
+                            <div className={`h-full p-8 rounded-2xl transition-all duration-300 ${isDark
+                                    ? 'glass-card hover:bg-white/5 border border-white/5'
+                                    : 'bg-white shadow-sm hover:shadow-xl'
+                                }`}>
+                                <div className="flex gap-1 text-yellow-500 mb-6">
                                     <Rate disabled defaultValue={item.rating} className="text-sm" />
                                 </div>
-                                <Paragraph className="text-slate-700 text-lg leading-relaxed mb-6 italic">
+                                <p className={`text-lg leading-relaxed mb-8 italic ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                                     &quot;{item.content}&quot;
-                                </Paragraph>
+                                </p>
                                 <div className="flex items-center gap-4 mt-auto">
-                                    <Avatar size={48} icon={<UserOutlined />} className="bg-indigo-100 text-indigo-600" />
+                                    <Avatar size={48} icon={<UserOutlined />} className="bg-indigo-500/20 text-indigo-400" />
                                     <div>
-                                        <div className="font-bold text-slate-900">{item.name}</div>
-                                        <div className="text-slate-500 text-sm">{item.role}</div>
+                                        <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{item.name}</div>
+                                        <div className={`text-sm ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>{item.role}</div>
                                     </div>
                                 </div>
-                            </Card>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
