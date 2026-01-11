@@ -14,20 +14,19 @@ export default function ProfilePage() {
     const [form] = Form.useForm();
 
     useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const response = await api.get('/users/me');
+                const profile = response.data.profile || {};
+                form.setFieldsValue(profile);
+            } catch (error) {
+                message.error('Failed to load profile');
+            } finally {
+                setLoading(false);
+            }
+        };
         fetchProfile();
-    }, []);
-
-    const fetchProfile = async () => {
-        try {
-            const response = await api.get('/users/me');
-            const profile = response.data.profile || {};
-            form.setFieldsValue(profile);
-        } catch (error) {
-            message.error('Failed to load profile');
-        } finally {
-            setLoading(false);
-        }
-    };
+    }, [form]);
 
     const onFinish = async (values) => {
         setSaving(true);

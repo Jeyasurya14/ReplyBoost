@@ -110,7 +110,7 @@ export default function Login() {
                     </Form>
 
                     <div className="text-center mt-6 pt-6 border-t border-slate-100">
-                        <Text className="text-slate-500">Don't have an account? </Text>
+                        <Text className="text-slate-500">Don&apos;t have an account? </Text>
                         <Link href="/register" className="text-indigo-600 font-medium hover:text-indigo-500 hover:underline">
                             Sign up for free
                         </Link>

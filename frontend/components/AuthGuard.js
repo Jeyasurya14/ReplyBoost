@@ -15,7 +15,10 @@ export default function AuthGuard({ children }) {
             if (!token) {
                 router.push('/login');
             } else {
-                setAuthorized(true);
+                // Avoid synchronous state update warning
+                setTimeout(() => {
+                    setAuthorized(true);
+                }, 0);
             }
         }
     }, [router]);

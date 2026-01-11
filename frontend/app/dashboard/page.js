@@ -19,7 +19,7 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                 <div>
                     <Title level={2} className="mb-1 text-slate-800 tracking-tight">Dashboard</Title>
-                    <Text className="text-slate-500 text-lg">Welcome back! Here's what's happening today.</Text>
+                    <Text className="text-slate-500 text-lg">Welcome back! Here&apos;s what&apos;s happening today.</Text>
                 </div>
                 <Button
                     type="primary"
