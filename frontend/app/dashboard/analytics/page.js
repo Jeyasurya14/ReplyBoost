@@ -8,24 +8,36 @@ import { ArrowUpOutlined, EyeOutlined, MessageOutlined, FileTextOutlined } from 
 const { Title, Text } = Typography;
 
 // Dummy data for visualization
-const proposalData = [
-    { name: 'Mon', sent: 4 },
-    { name: 'Tue', sent: 6 },
-    { name: 'Wed', sent: 3 },
-    { name: 'Thu', sent: 8 },
-    { name: 'Fri', sent: 5 },
-    { name: 'Sat', sent: 2 },
-    { name: 'Sun', sent: 1 },
-];
-
-const conversionData = [
-    { name: 'Week 1', replies: 2, viewed: 10 },
-    { name: 'Week 2', replies: 3, viewed: 12 },
-    { name: 'Week 3', replies: 5, viewed: 15 },
-    { name: 'Week 4', replies: 4, viewed: 18 },
-];
+import api from '@/lib/api';
 
 export default function AnalyticsPage() {
+    const [loading, setLoading] = React.useState(true);
+    const [data, setData] = React.useState({
+        total_proposals: 0,
+        response_rate: 0,
+        profile_views: 0,
+        chart_data: [],
+        funnel_data: []
+    });
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await api.get('/proposals/analytics');
+                setData(res.data);
+            } catch (error) {
+                console.error("Failed to load analytics", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
+
+    // Provide default data if empty to prevent chart crash
+    const chartData = data.chart_data.length > 0 ? data.chart_data : [{ name: 'No Data', sent: 0 }];
+    const funnelData = data.funnel_data.length > 0 ? data.funnel_data : [{ name: 'No Data', value: 0 }];
+
     return (
         <div className="max-w-7xl mx-auto">
             <div className="mb-8">
@@ -35,45 +47,45 @@ export default function AnalyticsPage() {
 
             <Row gutter={[24, 24]} className="mb-8">
                 <Col xs={24} sm={12} lg={6}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl h-full">
+                    <Card bordered={false} className="shadow-sm rounded-2xl h-full" loading={loading}>
                         <Statistic
                             title={<span className="text-slate-500 font-medium">Total Proposals</span>}
-                            value={142}
+                            value={data.total_proposals}
                             prefix={<FileTextOutlined className="text-indigo-500 mr-2" />}
                         />
                         <div className="mt-2 text-green-500 text-xs font-medium flex items-center">
-                            <ArrowUpOutlined className="mr-1" /> 12% increase
+                            <ArrowUpOutlined className="mr-1" /> Real-time
                         </div>
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl h-full">
+                    <Card bordered={false} className="shadow-sm rounded-2xl h-full" loading={loading}>
                         <Statistic
                             title={<span className="text-slate-500 font-medium">Response Rate</span>}
-                            value={18.5}
+                            value={data.response_rate}
                             precision={1}
                             suffix="%"
                             prefix={<MessageOutlined className="text-green-500 mr-2" />}
                         />
-                        <div className="mt-2 text-green-500 text-xs font-medium flex items-center">
-                            <ArrowUpOutlined className="mr-1" /> 2.1% increase
+                        <div className="mt-2 text-slate-400 text-xs font-medium">
+                            Based on replies
                         </div>
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl h-full">
+                    <Card bordered={false} className="shadow-sm rounded-2xl h-full" loading={loading}>
                         <Statistic
-                            title={<span className="text-slate-500 font-medium">Profile Views</span>}
-                            value={893}
+                            title={<span className="text-slate-500 font-medium">Views</span>}
+                            value={data.profile_views}
                             prefix={<EyeOutlined className="text-blue-500 mr-2" />}
                         />
                         <div className="mt-2 text-slate-400 text-xs font-medium">
-                            Last 30 days
+                            Proposals viewed
                         </div>
                     </Card>
                 </Col>
                 <Col xs={24} sm={12} lg={6}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl h-full">
+                    <Card bordered={false} className="shadow-sm rounded-2xl h-full" loading={loading}>
                         <div className="mb-2 text-slate-500 font-medium">Daily Goal</div>
                         <Progress type="circle" percent={75} size={60} strokeColor="#4F46E5" />
                         <span className="ml-4 text-slate-700 font-bold text-lg">3 / 4</span>
@@ -83,14 +95,14 @@ export default function AnalyticsPage() {
 
             <Row gutter={[24, 24]}>
                 <Col xs={24} lg={16}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl mb-8">
+                    <Card bordered={false} className="shadow-sm rounded-2xl mb-8" loading={loading}>
                         <div className="mb-6">
                             <Title level={4} className="m-0 text-slate-700">Proposal Activity</Title>
                             <Text type="secondary">Proposals sent over the last 7 days</Text>
                         </div>
                         <div className="h-80 w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={proposalData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                                <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                                     <defs>
                                         <linearGradient id="colorSent" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.8} />
@@ -110,21 +122,20 @@ export default function AnalyticsPage() {
                     </Card>
                 </Col>
                 <Col xs={24} lg={8}>
-                    <Card bordered={false} className="shadow-sm rounded-2xl h-full">
+                    <Card bordered={false} className="shadow-sm rounded-2xl h-full" loading={loading}>
                         <div className="mb-6">
                             <Title level={4} className="m-0 text-slate-700">Conversion Funnel</Title>
                             <Text type="secondary">Views vs Replies</Text>
                         </div>
                         <div className="h-80 w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={conversionData}>
+                                <BarChart data={funnelData}>
                                     <XAxis dataKey="name" axisLine={false} tickLine={false} />
                                     <Tooltip
                                         contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                                     />
                                     <Legend />
-                                    <Bar dataKey="viewed" fill="#E0E7FF" radius={[4, 4, 0, 0]} name="Profile Views" />
-                                    <Bar dataKey="replies" fill="#4F46E5" radius={[4, 4, 0, 0]} name="Replies" />
+                                    <Bar dataKey="value" fill="#4F46E5" radius={[4, 4, 0, 0]} name="Count" />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
