@@ -53,8 +53,15 @@ export default function GeneratePage() {
                 <div>
                     <Card title="Job Details" className="shadow-sm rounded-xl">
                         <div className="mb-6">
-                            <span className="block mb-2 font-medium text-gray-700">Platform</span>
-                            <Select value={platform} onChange={setPlatform} className="w-full" size="large">
+                            <label htmlFor="platform-select" className="block mb-2 font-medium text-gray-700">Platform</label>
+                            <Select
+                                id="platform-select"
+                                value={platform}
+                                onChange={setPlatform}
+                                className="w-full"
+                                size="large"
+                                aria-label="Select Platform"
+                            >
                                 <Option value="Upwork">Upwork</Option>
                                 <Option value="Fiverr">Fiverr</Option>
                                 <Option value="Freelancer">Freelancer.com</Option>
@@ -110,11 +117,11 @@ export default function GeneratePage() {
                                 </Button>
                             </div>
                         ) : (
-                            <div className="text-center py-32 text-gray-400 flex flex-col items-center justify-center h-full">
+                            <div className="text-center py-32 text-gray-500 flex flex-col items-center justify-center h-full">
                                 <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                                     <ThunderboltOutlined style={{ fontSize: '32px', opacity: 0.5 }} />
                                 </div>
-                                <Title level={4} className="text-gray-400">Ready to write</Title>
+                                <Title level={4} className="text-gray-500">Ready to write</Title>
                                 <Paragraph className="max-w-xs mx-auto">
                                     Paste a job description on the left and our AI will craft the perfect reply.
                                 </Paragraph>
