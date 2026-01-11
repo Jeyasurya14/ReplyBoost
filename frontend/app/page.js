@@ -226,7 +226,7 @@ export default function Home() {
             <span className="text-xl font-bold text-slate-800">ReplyBoost</span>
           </div>
           <div className="flex justify-center gap-8 mb-8 text-slate-500">
-            <a href="#" className="hover:text-indigo-600 transition-colors">Pricing</a>
+            <Link href="/pricing" className="hover:text-indigo-600 transition-colors">Pricing</Link>
             <a href="#" className="hover:text-indigo-600 transition-colors">Blog</a>
             <a href="#" className="hover:text-indigo-600 transition-colors">Contact</a>
             <a href="#" className="hover:text-indigo-600 transition-colors">Terms</a>
