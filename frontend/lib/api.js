@@ -6,6 +6,10 @@ const api = axios.create({
     baseURL: API_URL,
 });
 
+if (typeof window !== 'undefined') {
+    console.log('🔌 Connecting to Backend:', API_URL);
+}
+
 api.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
         const token = localStorage.getItem('token');
