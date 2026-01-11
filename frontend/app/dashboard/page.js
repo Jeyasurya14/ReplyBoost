@@ -21,6 +21,9 @@ import {
 } from 'recharts';
 import api from '@/lib/api';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 
 export default function Dashboard() {
     const [loading, setLoading] = useState(true);
