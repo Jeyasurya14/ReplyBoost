@@ -4,10 +4,12 @@ import React from 'react';
 import { Card, Row, Col, Statistic, Button, Typography, theme } from 'antd';
 import { ArrowUpOutlined, ThunderboltOutlined, FileTextOutlined, DollarOutlined, PlusOutlined } from '@ant-design/icons';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const { Title, Text } = Typography;
 
 export default function Dashboard() {
+    const router = useRouter();
     const {
         token: { colorPrimary },
     } = theme.useToken();
@@ -19,11 +21,15 @@ export default function Dashboard() {
                     <Title level={2} className="mb-1 text-slate-800 tracking-tight">Dashboard</Title>
                     <Text className="text-slate-500 text-lg">Welcome back! Here's what's happening today.</Text>
                 </div>
-                <Link href="/dashboard/generate">
-                    <Button type="primary" icon={<ThunderboltOutlined />} size="large" className="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-200 border-none rounded-xl font-medium text-base">
-                        Generate New Reply
-                    </Button>
-                </Link>
+                <Button
+                    type="primary"
+                    icon={<ThunderboltOutlined />}
+                    size="large"
+                    className="h-12 px-6 bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-200 border-none rounded-xl font-medium text-base"
+                    onClick={() => router.push('/dashboard/generate')}
+                >
+                    Generate New Reply
+                </Button>
             </div>
 
             <Row gutter={[24, 24]} className="mb-10">
@@ -83,9 +89,7 @@ export default function Dashboard() {
                                 <span className="text-4xl font-bold text-slate-800">$0.00</span>
                             </div>
                             <div className="mt-4">
-                                <Link href="/dashboard/income">
-                                    <Button type="link" className="p-0 h-auto text-purple-600 hover:text-purple-700 flex items-center gap-1">Add Income <PlusOutlined className="text-xs" /></Button>
-                                </Link>
+                                <Button type="link" onClick={() => window.location.href = '/dashboard/income'} className="p-0 h-auto text-purple-600 hover:text-purple-700 flex items-center gap-1">Add Income <PlusOutlined className="text-xs" /></Button>
                             </div>
                         </div>
                     </Card>
@@ -100,11 +104,14 @@ export default function Dashboard() {
                 <Title level={4} className="text-slate-600 mb-2 font-medium">No proposals sent yet</Title>
                 <Text className="text-slate-400 block mb-8 max-w-sm mx-auto">Start generating AI-powered proposals to see your history and stats here.</Text>
 
-                <Link href="/dashboard/generate">
-                    <Button type="primary" size="large" className="h-12 px-8 bg-white text-indigo-600 border-2 border-indigo-100 hover:border-indigo-600 hover:text-indigo-700 font-medium rounded-xl shadow-none">
-                        Create First Proposal
-                    </Button>
-                </Link>
+                <Button
+                    type="primary"
+                    size="large"
+                    className="h-12 px-8 bg-white text-indigo-600 border-2 border-indigo-100 hover:border-indigo-600 hover:text-indigo-700 font-medium rounded-xl shadow-none"
+                    onClick={() => window.location.href = '/dashboard/generate'}
+                >
+                    Create First Proposal
+                </Button>
             </Card>
         </div>
     );
