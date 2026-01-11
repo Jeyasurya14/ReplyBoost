@@ -28,7 +28,7 @@ def generate_reply(request: GenerateRequest, current_user: dict = Depends(get_cu
         )
     
     plan = current_user.get("plan", "free")
-    limit = 1 if plan == "free" else 10 # Example Pro limit
+    limit = 20 if plan == "free" else 100 # Match "20 Free Proposals" claim
     
     if current_usage >= limit:
          raise HTTPException(status_code=403, detail=f"Daily limit of {limit} reached. Upgrade to Pro for more.")
