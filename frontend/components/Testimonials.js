@@ -37,7 +37,7 @@ export default function Testimonials() {
                         Loved by Freelancers Worldwide
                     </Title>
                     <Text className="text-slate-500 text-lg">
-                        Don't just take our word for it. See what others are saying.
+                        Don&apos;t just take our word for it. See what others are saying.
                     </Text>
                 </div>
 
@@ -55,7 +55,7 @@ export default function Testimonials() {
                                     <Rate disabled defaultValue={item.rating} className="text-sm" />
                                 </div>
                                 <Paragraph className="text-slate-700 text-lg leading-relaxed mb-6 italic">
-                                    "{item.content}"
+                                    &quot;{item.content}&quot;
                                 </Paragraph>
                                 <div className="flex items-center gap-4 mt-auto">
                                     <Avatar size={48} icon={<UserOutlined />} className="bg-indigo-100 text-indigo-600" />

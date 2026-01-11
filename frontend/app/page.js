@@ -139,7 +139,7 @@ export default function Home() {
         <div className="text-center mb-20">
           <Title level={2} className="text-3xl md:text-5xl font-bold text-slate-900 mb-6">Why Top Freelancers Choose Us</Title>
           <Paragraph className="text-slate-500 text-xl max-w-2xl mx-auto">
-            It's not just about speed. It's about quality that converts.
+            It&apos;s not just about speed. It&apos;s about quality that converts.
           </Paragraph>
         </div>
 
@@ -155,7 +155,7 @@ export default function Home() {
                 </div>
                 <Title level={3} className="text-2xl font-bold mb-4">Pass AI Detectors</Title>
                 <Paragraph className="text-slate-600 text-lg leading-relaxed">
-                  Clients ignore generic AI spam. Our models are fine-tuned to sound human, professional, and empathetic—bypassing the "written by ChatGPT" vibe.
+                  Clients ignore generic AI spam. Our models are fine-tuned to sound human, professional, and empathetic—bypassing the &quot;written by ChatGPT&quot; vibe.
                 </Paragraph>
               </div>
             </div>
