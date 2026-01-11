@@ -1,26 +1,18 @@
 'use client';
 
-
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import { Row, Col, Spin, Empty } from 'antd';
+import { Row, Col, Spin, Empty, Button, Progress, Tag } from 'antd';
 import {
     ThunderboltOutlined,
     SendOutlined,
-    EyeOutlined,
-    CheckCircleOutlined,
+    MessageOutlined,
     RiseOutlined,
-    LoadingOutlined
+    LoadingOutlined,
+    CheckCircleFilled,
+    ArrowRightOutlined,
+    ArrowUpOutlined
 } from '@ant-design/icons';
-import {
-    AreaChart,
-    Area,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer
-} from 'recharts';
 import api from '@/lib/api';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -33,9 +25,7 @@ export default function Dashboard() {
     const [stats, setStats] = useState({
         total_proposals: 0,
         response_rate: 0,
-        profile_views: 0,
-        chart_data: [],
-        funnel_data: []
+        profile_views: 0
     });
     const [recentActivity, setRecentActivity] = useState([]);
 
@@ -54,7 +44,7 @@ export default function Dashboard() {
 
             setUser(userRes.data);
             setStats(analyticsRes.data);
-            setRecentActivity(proposalsRes.data.slice(0, 5)); // Limit to 5
+            setRecentActivity(proposalsRes.data.slice(0, 3)); // Limit to 3 for clean view
         } catch (error) {
             console.error("Failed to fetch dashboard data:", error);
         } finally {
@@ -70,206 +60,150 @@ export default function Dashboard() {
         );
     }
 
-    // Calculate credits left (Assuming standard plan is 20/day for now, or infinity)
-    // Note: Adjust logic based on actual plan limits if available in user object
     const MAX_CREDITS = 20;
-    const creditsLeft = Math.max(0, MAX_CREDITS - (user?.daily_usage || 0));
+    const usedCredits = user?.daily_usage || 0;
+    const progressPercent = Math.min(100, Math.round((usedCredits / MAX_CREDITS) * 100));
 
     return (
-        <div className="space-y-8 animate-fade-in pb-10">
-            {/* Welcome Section */}
-            <div className="relative overflow-hidden rounded-3xl p-8 mb-8 glass-panel border border-indigo-500/20">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/20 rounded-full blur-[120px] -mr-20 -mt-20 pointer-events-none"></div>
-                <div className="relative z-10 flex flex-col md:flex-row justify-between items-end gap-4">
-                    <div>
-                        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
-                            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{user?.email?.split('@')[0] || 'Freelancer'}</span>
-                        </h1>
-                        <p className="text-slate-300 text-lg">Your cosmic command center is ready.</p>
-                    </div>
-                    <div className="glass-panel px-4 py-2 rounded-full border border-emerald-500/20 flex items-center gap-3 bg-emerald-500/5 backdrop-blur-md">
-                        <div className="min-w-[8px] min-h-[8px] rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
-                        <span className="text-emerald-300 text-sm font-medium">System Operational</span>
-                    </div>
-                </div>
+        <div className="space-y-6 animate-fade-in pb-10">
+            {/* Headline */}
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Today&apos;s Reply System</h1>
+                <p className="text-slate-500 text-lg">Focus on consistency. Build your pipeline.</p>
             </div>
 
-            {/* Stats Grid */}
             <Row gutter={[24, 24]}>
-                {[
-                    {
-                        title: 'Total Proposals',
-                        value: stats.total_proposals,
-                        icon: <SendOutlined />,
-                        color: 'blue',
-                        gradient: 'from-blue-500 to-indigo-600',
-                        subtext: 'Lifetime sent'
-                    },
-                    {
-                        title: 'Reply Rate',
-                        value: `${stats.response_rate}%`,
-                        icon: <CheckCircleOutlined />,
-                        color: 'emerald',
-                        gradient: 'from-emerald-400 to-teal-500',
-                        subtext: 'Global average: 5%'
-                    },
-                    {
-                        title: 'Credits Left',
-                        value: creditsLeft,
-                        icon: <ThunderboltOutlined />,
-                        color: 'amber',
-                        gradient: 'from-amber-400 to-orange-500',
-                        subtext: `Resets daily (${MAX_CREDITS} max)`
-                    },
-                    {
-                        title: 'Profile Views',
-                        value: stats.profile_views,
-                        icon: <EyeOutlined />,
-                        color: 'purple',
-                        gradient: 'from-purple-500 to-pink-600',
-                        subtext: 'Past 30 days'
-                    },
-                ].map((item, idx) => (
-                    <Col xs={24} sm={12} lg={6} key={idx}>
-                        <div className="glass-card group relative overflow-hidden p-6 rounded-3xl h-full border border-white/5 hover:border-white/10 transition-all duration-300 hover:-translate-y-1">
-                            <div className={`absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br ${item.gradient} opacity-10 blur-[40px] group-hover:opacity-20 transition-opacity duration-500`}></div>
-
-                            <div className="flex justify-between items-start mb-4 relative z-10">
-                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg shadow-${item.color}-500/20 group-hover:scale-110 transition-transform duration-300`}>
-                                    {item.icon}
-                                </div>
-                                <div className="text-slate-500 hover:text-white cursor-pointer transition-colors bg-white/5 p-2 rounded-lg hover:bg-white/10 backdrop-blur-sm">
-                                    <RiseOutlined />
-                                </div>
+                {/* Progress Card */}
+                <Col xs={24} lg={12}>
+                    <div className="saas-card p-6 h-full flex flex-col justify-between relative overflow-hidden">
+                        <div>
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="text-lg font-semibold text-slate-800">Daily Goal</h3>
+                                <span className="text-slate-500 font-medium">{usedCredits} / {MAX_CREDITS} proposals</span>
                             </div>
+                            <Progress
+                                percent={progressPercent}
+                                strokeColor="#4F46E5"
+                                trailColor="#f1f5f9"
+                                showInfo={false}
+                                size="small"
+                                className="mb-3"
+                            />
+                            <p className="text-slate-400 text-sm flex items-center gap-2">
+                                <CheckCircleFilled className="text-emerald-500" />
+                                Consistency beats volume.
+                            </p>
+                        </div>
+                    </div>
+                </Col>
 
-                            <div className="relative z-10">
-                                <div className="text-4xl font-bold text-white mb-1 tracking-tight">{item.value}</div>
-                                <div className="text-slate-400 font-medium text-sm uppercase tracking-wider">{item.title}</div>
-                                <div className="mt-4 flex items-center gap-2 text-xs">
-                                    <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium border border-emerald-500/10">
-                                        +12%
-                                    </span>
-                                    <span className="text-slate-500">{item.subtext}</span>
+                {/* Primary Action Card */}
+                <Col xs={24} lg={12}>
+                    <div className="saas-card p-6 h-full bg-gradient-to-br from-indigo-600 to-indigo-700 border-none text-white relative overflow-hidden group">
+                        <div className="relative z-10">
+                            <h3 className="text-xl font-bold text-white mb-1">Generate Today&apos;s Reply</h3>
+                            <p className="text-indigo-100 mb-6 text-sm opacity-90">Create a structured, reply-focused proposal in under 60 seconds.</p>
+                            <Link href="/dashboard/generate">
+                                <Button size="large" className="bg-white text-indigo-600 border-none font-semibold hover:!bg-indigo-50 hover:!text-indigo-700 shadow-lg shadow-black/10 flex items-center gap-2">
+                                    <ThunderboltOutlined /> Start Generator
+                                </Button>
+                            </Link>
+                        </div>
+                        <div className="absolute right-0 bottom-0 opacity-10 transform translate-x-4 translate-y-4 group-hover:scale-110 transition-transform duration-500">
+                            <ThunderboltOutlined style={{ fontSize: '140px' }} />
+                        </div>
+                    </div>
+                </Col>
+            </Row>
+
+            {/* Metrics Section */}
+            <div>
+                <h2 className="text-lg font-semibold text-slate-800 mb-4">Pipeline Metrics</h2>
+                <Row gutter={[24, 24]}>
+                    <Col xs={24} sm={8}>
+                        <div className="saas-card p-5">
+                            <div className="flex items-center gap-3 text-slate-500 mb-2">
+                                <SendOutlined />
+                                <span className="text-sm font-medium">Proposals Sent</span>
+                            </div>
+                            <div className="text-3xl font-bold text-slate-900">{stats.total_proposals}</div>
+                        </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <div className="saas-card p-5">
+                            <div className="flex items-center gap-3 text-slate-500 mb-2">
+                                <MessageOutlined />
+                                <span className="text-sm font-medium">Replies Received</span>
+                            </div>
+                            <div className="text-3xl font-bold text-slate-900">
+                                {Math.round(stats.total_proposals * (stats.response_rate / 100))}
+                            </div>
+                        </div>
+                    </Col>
+                    <Col xs={24} sm={8}>
+                        <div className="saas-card p-5">
+                            <div className="flex items-center gap-3 text-slate-500 mb-2">
+                                <RiseOutlined />
+                                <span className="text-sm font-medium">Reply Rate</span>
+                            </div>
+                            <div className="flex items-end gap-3">
+                                <div className="text-3xl font-bold text-slate-900">{stats.response_rate}%</div>
+                                <div className="flex items-center text-emerald-600 text-xs font-medium bg-emerald-50 px-2 py-1 rounded-full mb-1">
+                                    <ArrowUpOutlined className="mr-1" /> 2.1%
                                 </div>
                             </div>
                         </div>
                     </Col>
-                ))}
-            </Row>
+                </Row>
+            </div>
 
-            {/* Chart & Activity Section */}
-            <Row gutter={[24, 24]}>
-                {/* Chart */}
-                <Col xs={24} lg={16}>
-                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col relative overflow-hidden border border-white/10">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none"></div>
+            {/* Recent Activity */}
+            <div>
+                <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg font-semibold text-slate-800">Recent Activity</h2>
+                    <Link href="/dashboard/proposals" className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1">
+                        View Full Log <ArrowRightOutlined />
+                    </Link>
+                </div>
 
-                        <div className="flex justify-between items-center mb-8 relative z-10">
-                            <div>
-                                <h3 className="text-2xl font-bold text-white mb-1">Proposal Performance</h3>
-                                <p className="text-slate-500 text-sm">Proposals sent over the last 7 days</p>
-                            </div>
-                            <div className="flex gap-2">
-                                <span className="w-3 h-3 rounded-full bg-indigo-500 ring-2 ring-indigo-500/20"></span>
-                                <span className="text-xs text-slate-400 font-medium">Sent</span>
-                            </div>
-                        </div>
-
-                        <div className="flex-1 w-full min-h-0 relative z-10">
-                            {stats.chart_data && stats.chart_data.length > 0 ? (
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <AreaChart data={stats.chart_data}>
-                                        <defs>
-                                            <linearGradient id="colorSent" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                                                <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                                            </linearGradient>
-                                        </defs>
-                                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                                        <XAxis
-                                            dataKey="name"
-                                            stroke="#64748b"
-                                            fontSize={12}
-                                            tickLine={false}
-                                            axisLine={false}
-                                            tickMargin={10}
-                                            tickFormatter={(value) => dayjs(value).format('MMM D')}
-                                        />
-                                        <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
-                                        <Tooltip
-                                            contentStyle={{
-                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                                                backdropFilter: 'blur(10px)',
-                                                borderColor: 'rgba(255,255,255,0.1)',
-                                                color: '#fff',
-                                                borderRadius: '12px',
-                                                boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)'
-                                            }}
-                                            itemStyle={{ color: '#fff' }}
-                                            cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }}
-                                        />
-                                        <Area
-                                            type="monotone"
-                                            dataKey="sent"
-                                            stroke="#818cf8"
-                                            strokeWidth={4}
-                                            fillOpacity={1}
-                                            fill="url(#colorSent)"
-                                            activeDot={{ r: 6, strokeWidth: 0, fill: '#fff', stroke: '#6366f1' }}
-                                        />
-                                    </AreaChart>
-                                </ResponsiveContainer>
-                            ) : (
-                                <div className="h-full flex flex-col items-center justify-center text-slate-500">
-                                    <Empty description={<span className="text-slate-500">No data available yet</span>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </Col>
-
-                {/* Recent Activity */}
-                <Col xs={24} lg={8}>
-                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col border border-white/10 relative overflow-hidden">
-                        <div className="flex justify-between items-center mb-6 relative z-10">
-                            <h3 className="text-xl font-bold text-white">Recent Activity</h3>
-                            <Link href="/dashboard/proposals" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors bg-indigo-500/10 px-3 py-1 rounded-full">View All</Link>
-                        </div>
-
-                        <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar relative z-10">
-                            {recentActivity.length > 0 ? (
-                                recentActivity.map((proposal, i) => (
-                                    <div key={i} className="group relative p-4 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 transition-all duration-300 hover:border-white/10 cursor-pointer">
-                                        <div className="flex gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center shrink-0 border border-indigo-500/10 group-hover:border-indigo-500/30 transition-colors">
-                                                <SendOutlined className="text-indigo-400 group-hover:scale-110 transition-transform" />
+                <div className="saas-card overflow-hidden">
+                    {recentActivity.length > 0 ? (
+                        <div className="divide-y divide-slate-100">
+                            {recentActivity.map((proposal, i) => (
+                                <div key={i} className="p-4 hover:bg-slate-50 transition-colors flex items-center justify-between group">
+                                    <div className="flex items-center gap-4 min-w-0">
+                                        <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 shrink-0 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                                            <SendOutlined />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <div className="font-medium text-slate-900 truncate max-w-md">
+                                                {proposal.job_description ? proposal.job_description.substring(0, 50) + "..." : "Generated Proposal"}
                                             </div>
-                                            <div className="min-w-0 flex-1">
-                                                <div className="text-slate-200 font-medium text-sm mb-1 truncate group-hover:text-white transition-colors">
-                                                    {proposal.job_description ?
-                                                        (proposal.job_description.substring(0, 40) + (proposal.job_description.length > 40 ? '...' : ''))
-                                                        : 'Generated Proposal'}
-                                                </div>
-                                                <div className="flex justify-between items-center">
-                                                    <span className="text-slate-500 text-xs">{dayjs(proposal.created_at).fromNow()}</span>
-                                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        Details
-                                                    </span>
-                                                </div>
+                                            <div className="text-xs text-slate-500">
+                                                {dayjs(proposal.created_at).fromNow()} • {proposal.platform || "Upwork"}
                                             </div>
                                         </div>
                                     </div>
-                                ))
-                            ) : (
-                                <div className="h-full flex items-center justify-center">
-                                    <Empty description={<span className="text-slate-500">No proposals generated yet</span>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
+                                    <div>
+                                        <Tag color="blue" className="mr-0 border-none bg-blue-50 text-blue-700 font-medium px-3 py-1">Sent</Tag>
+                                    </div>
                                 </div>
-                            )}
+                            ))}
                         </div>
-                    </div>
-                </Col>
-            </Row>
+                    ) : (
+                        <div className="p-12 flex flex-col items-center justify-center text-center">
+                            <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
+                                <SendOutlined className="text-2xl" />
+                            </div>
+                            <h3 className="text-slate-900 font-medium mb-1">No activity yet</h3>
+                            <p className="text-slate-500 text-sm mb-4">Start by generating your first proposal.</p>
+                            <Link href="/dashboard/generate">
+                                <Button type="default">Create Proposal</Button>
+                            </Link>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }

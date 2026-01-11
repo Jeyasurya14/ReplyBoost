@@ -14,13 +14,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-background text-foreground relative selection:bg-indigo-500/30 selection:text-indigo-200 cosmic-bg`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-slate-50 text-slate-900 relative`}>
         <ConfigProvider
           theme={{
-            algorithm: theme.darkAlgorithm,
             token: {
-              colorPrimary: '#6366f1',
+              colorPrimary: '#4F46E5', // Indigo 600
               fontFamily: 'var(--font-inter)',
+              borderRadius: 8,
             },
           }}
         >

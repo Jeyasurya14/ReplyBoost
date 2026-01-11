@@ -1,17 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Button, Card, Typography, Select, message, Spin } from 'antd';
-import { UserOutlined, SaveOutlined } from '@ant-design/icons';
+import { Form, Input, Button, Tabs, Typography, Select, message, Spin, Switch, List, Tag, Progress } from 'antd';
+import { UserOutlined, SaveOutlined, CreditCardOutlined, SettingOutlined, CheckCircleFilled, SketchOutlined } from '@ant-design/icons';
 import api from '@/lib/api';
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-export default function ProfilePage() {
+export default function SettingsPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [form] = Form.useForm();
+    const [activeTab, setActiveTab] = useState('profile');
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -32,67 +33,50 @@ export default function ProfilePage() {
         setSaving(true);
         try {
             await api.put('/users/me/profile', values);
-            message.success('Profile updated successfully');
+            message.success('Settings updated successfully');
         } catch (error) {
-            message.error('Failed to update profile');
+            message.error('Failed to update settings');
         } finally {
             setSaving(false);
         }
     };
 
-    if (loading) return <div className="p-8 text-center"><Spin /></div>;
-
-    return (
-        <div className="max-w-4xl mx-auto space-y-8 animate-fade-in pb-12">
-            <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                    <UserOutlined className="text-3xl text-white" />
-                </div>
-                <div>
-                    <Title level={2} className="!text-white !mb-1 tracking-tight">Your Profile</Title>
-                    <p className="text-slate-400 text-lg">Customize your AI&apos;s writing style and context.</p>
-                </div>
-            </div>
-
-            <div className="glass-panel p-1 rounded-3xl overflow-hidden border border-white/10 relative">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
-
-                <div className="p-8 md:p-10 relative z-10">
+    const items = [
+        {
+            key: 'profile',
+            label: <span className="flex items-center gap-2"><UserOutlined /> Profile</span>,
+            children: (
+                <div className="max-w-2xl">
                     <Form
                         form={form}
                         layout="vertical"
                         onFinish={onFinish}
                         size="large"
-                        className="cosmic-form"
+                        className="mt-4"
                     >
-                        <div className="grid md:grid-cols-2 gap-8">
+                        <div className="grid md:grid-cols-2 gap-6">
                             <Form.Item
                                 name="skill"
-                                label={<span className="text-slate-300 font-medium">Primary Skill</span>}
+                                label="Primary Skill"
                                 rules={[{ required: true, message: 'Required' }]}
-                                tooltip={{ title: "e.g. Web Development, Graphic Design", icon: <span className="text-indigo-400">?</span> }}
-                                className="mb-0"
                             >
-                                <Input placeholder="e.g. Full Stack Developer" className="glass-input" />
+                                <Input placeholder="e.g. Full Stack Developer" className="saas-input" />
                             </Form.Item>
 
                             <Form.Item
                                 name="niche"
-                                label={<span className="text-slate-300 font-medium">Your Niche</span>}
+                                label="Target Niche"
                                 rules={[{ required: true, message: 'Required' }]}
-                                tooltip={{ title: "e.g. SaaS, E-commerce, Real Estate", icon: <span className="text-indigo-400">?</span> }}
-                                className="mb-0"
                             >
-                                <Input placeholder="e.g. FinTech SaaS" className="glass-input" />
+                                <Input placeholder="e.g. FinTech SaaS" className="saas-input" />
                             </Form.Item>
 
                             <Form.Item
                                 name="platform"
-                                label={<span className="text-slate-300 font-medium">Primary Platform</span>}
+                                label="Primary Platform"
                                 rules={[{ required: true, message: 'Required' }]}
-                                className="mb-0"
                             >
-                                <Select placeholder="Select Platform" className="glass-select" popupClassName="glass-dropdown">
+                                <Select placeholder="Select Platform" className="w-full">
                                     <Option value="Upwork">Upwork</Option>
                                     <Option value="Fiverr">Fiverr</Option>
                                     <Option value="Freelancer">Freelancer.com</Option>
@@ -102,11 +86,10 @@ export default function ProfilePage() {
 
                             <Form.Item
                                 name="experience"
-                                label={<span className="text-slate-300 font-medium">Experience Level</span>}
+                                label="Experience Level"
                                 rules={[{ required: true, message: 'Required' }]}
-                                className="mb-0"
                             >
-                                <Select placeholder="Select Level" className="glass-select" popupClassName="glass-dropdown">
+                                <Select placeholder="Select Level" className="w-full">
                                     <Option value="Junior">Junior (1-2 years)</Option>
                                     <Option value="Mid-Level">Mid-Level (3-5 years)</Option>
                                     <Option value="Senior">Senior (5+ years)</Option>
@@ -115,60 +98,149 @@ export default function ProfilePage() {
                             </Form.Item>
                         </div>
 
-                        <div className="mt-10 pt-8 border-t border-white/10 flex justify-end">
+                        <div className="mt-6">
                             <Button
                                 type="primary"
                                 htmlType="submit"
                                 icon={<SaveOutlined />}
                                 loading={saving}
                                 size="large"
-                                className="bg-gradient-to-r from-indigo-600 to-purple-600 border-none h-12 px-8 rounded-xl font-bold shadow-lg shadow-indigo-500/25 hover:!scale-[1.02] active:!scale-[0.98] transition-all"
+                                className="bg-indigo-600 h-12 px-8 rounded-lg font-semibold hover:!bg-indigo-700 shadow-md"
                             >
                                 Save Changes
                             </Button>
                         </div>
                     </Form>
                 </div>
+            )
+        },
+        {
+            key: 'subscription',
+            label: <span className="flex items-center gap-2"><CreditCardOutlined /> Subscription</span>,
+            children: (
+                <div className="max-w-3xl mt-4">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8 flex items-center justify-between">
+                        <div>
+                            <div className="text-slate-500 font-medium mb-1">Current Plan</div>
+                            <h3 className="text-2xl font-bold text-slate-900 m-0">Free Plan</h3>
+                            <div className="mt-2 text-slate-500 text-sm">Resets monthly on the 1st.</div>
+                        </div>
+                        <div className="text-right">
+                            <div className="text-slate-500 font-medium mb-1">Credits Used</div>
+                            <div className="text-2xl font-bold text-indigo-600 m-0">8 / 20</div>
+                            <Progress percent={40} showInfo={false} strokeColor="#4F46E5" trailColor="#e2e8f0" className="w-32 mt-2" size="small" />
+                        </div>
+                    </div>
+
+                    <h3 className="text-lg font-bold text-slate-900 mb-4">Upgrade your productivity</h3>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="border-2 border-indigo-100 rounded-xl p-6 relative overflow-hidden bg-white hover:border-indigo-200 transition-colors cursor-pointer">
+                            <div className="absolute top-0 right-0 bg-indigo-100 text-indigo-700 px-3 py-1 rounded-bl-xl font-bold text-xs uppercase">Current</div>
+                            <h4 className="font-bold text-slate-900 text-lg mb-2">Free</h4>
+                            <div className="text-3xl font-bold text-slate-900 mb-4">$0<span className="text-base font-normal text-slate-400">/mo</span></div>
+                            <ul className="space-y-3 mb-6">
+                                <li className="flex items-center gap-2 text-slate-600"><CheckCircleFilled className="text-indigo-500" /> 20 Credits / Day</li>
+                                <li className="flex items-center gap-2 text-slate-600"><CheckCircleFilled className="text-indigo-500" /> Basic Templates</li>
+                            </ul>
+                            <Button disabled block size="large" className="bg-slate-100 text-slate-400 border-none font-semibold">Active</Button>
+                        </div>
+
+                        <div className="border-2 border-indigo-600 rounded-xl p-6 relative overflow-hidden bg-gradient-to-b from-indigo-600 to-indigo-700 text-white shadow-xl shadow-indigo-200">
+                            <div className="absolute top-0 right-0 bg-white/20 text-white px-3 py-1 rounded-bl-xl font-bold text-xs uppercase backdrop-blur-sm">Popular</div>
+                            <div className="flex items-center gap-2 mb-2"><SketchOutlined className="text-xl" /> <h4 className="font-bold text-lg m-0">Pro</h4></div>
+                            <div className="text-3xl font-bold text-white mb-4">$19<span className="text-base font-normal text-indigo-200">/mo</span></div>
+                            <ul className="space-y-3 mb-6 text-indigo-100">
+                                <li className="flex items-center gap-2"><CheckCircleFilled className="text-white" /> Unlimited Credits</li>
+                                <li className="flex items-center gap-2"><CheckCircleFilled className="text-white" /> Advanced AI Models</li>
+                                <li className="flex items-center gap-2"><CheckCircleFilled className="text-white" /> Priority Support</li>
+                            </ul>
+                            <Button block size="large" className="bg-white text-indigo-600 border-none font-bold hover:!bg-indigo-50 hover:!text-indigo-700 h-10">Upgrade Now</Button>
+                        </div>
+                    </div>
+                </div>
+            )
+        },
+        {
+            key: 'preferences',
+            label: <span className="flex items-center gap-2"><SettingOutlined /> Preferences</span>,
+            children: (
+                <div className="max-w-xl mt-4 space-y-6">
+                    <List
+                        header={<div className="font-bold text-slate-800">Notifications</div>}
+                        bordered={false}
+                        dataSource={[
+                            { title: 'Email Summaries', desc: 'Receive weekly performance reports.' },
+                            { title: 'New Features', desc: 'Get notified about platform updates.' }
+                        ]}
+                        renderItem={(item) => (
+                            <List.Item className="!px-0 !py-4">
+                                <List.Item.Meta
+                                    title={<span className="text-slate-700 font-medium">{item.title}</span>}
+                                    description={<span className="text-slate-500">{item.desc}</span>}
+                                />
+                                <Switch defaultChecked />
+                            </List.Item>
+                        )}
+                    />
+
+                    <List
+                        header={<div className="font-bold text-slate-800">Appearance</div>}
+                        bordered={false}
+                        dataSource={[
+                            { title: 'Dark Mode', desc: 'Switch between light and dark themes.' },
+                        ]}
+                        renderItem={(item) => (
+                            <List.Item className="!px-0 !py-4">
+                                <List.Item.Meta
+                                    title={<span className="text-slate-700 font-medium">{item.title}</span>}
+                                    description={<span className="text-slate-500">{item.desc}</span>}
+                                />
+                                <Switch disabled checked={false} className="opacity-50" />
+                            </List.Item>
+                        )}
+                    />
+                </div>
+            )
+        }
+    ];
+
+    if (loading) return <div className="p-12 text-center text-slate-400"><Spin /></div>;
+
+    return (
+        <div className="max-w-5xl mx-auto pb-12 animate-fade-in">
+            <div className="mb-8">
+                <Title level={2} className="!text-slate-900 !mb-2 tracking-tight">Settings</Title>
+                <p className="text-slate-500 text-lg">Manage your profile, subscription, and preferences.</p>
+            </div>
+
+            <div className="saas-card p-6 min-h-[600px]">
+                <Tabs
+                    activeKey={activeTab}
+                    onChange={setActiveTab}
+                    items={items}
+                    size="large"
+                    className="custom-tabs"
+                />
             </div>
 
             <style jsx global>{`
-                .glass-input {
-                    background-color: rgba(255, 255, 255, 0.03) !important;
-                    border-color: rgba(255, 255, 255, 0.1) !important;
-                    color: white !important;
-                    border-radius: 0.75rem !important;
-                    height: 3.5rem !important;
-                    padding: 0 1rem !important;
+                .custom-tabs .ant-tabs-nav::before {
+                    border-bottom: 1px solid #f1f5f9 !important;
+                }
+                .custom-tabs .ant-tabs-tab {
+                    padding: 12px 0 !important;
+                    margin-right: 32px !important;
+                    color: #64748b !important;
                     font-size: 1rem !important;
                 }
-                .glass-input:hover, .glass-input:focus {
-                    background-color: rgba(255, 255, 255, 0.05) !important;
-                    border-color: #6366f1 !important;
-                    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
+                .custom-tabs .ant-tabs-tab-active .ant-tabs-tab-btn {
+                    color: #4F46E5 !important;
+                    font-weight: 600 !important;
                 }
-                .glass-input::placeholder {
-                    color: rgba(255, 255, 255, 0.2) !important;
-                }
-                
-                .glass-select .ant-select-selector {
-                    background-color: rgba(255, 255, 255, 0.03) !important;
-                    border-color: rgba(255, 255, 255, 0.1) !important;
-                    color: white !important;
-                    border-radius: 0.75rem !important;
-                    height: 3.5rem !important;
-                    display: flex !important;
-                    align-items: center !important;
-                    padding: 0 1rem !important;
-                }
-                 .glass-select:hover .ant-select-selector, .glass-select.ant-select-focused .ant-select-selector {
-                    border-color: #6366f1 !important;
-                     box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1) !important;
-                }
-                .glass-select .ant-select-arrow {
-                    color: rgba(255, 255, 255, 0.5) !important;
-                }
-                .glass-select .ant-select-selection-placeholder {
-                    color: rgba(255, 255, 255, 0.2) !important;
+                .custom-tabs .ant-tabs-ink-bar {
+                    background: #4F46E5 !important;
+                    height: 3px !important;
+                    border-radius: 3px 3px 0 0 !important;
                 }
             `}</style>
         </div>

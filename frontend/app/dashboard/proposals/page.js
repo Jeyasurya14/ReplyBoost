@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Table, Tag, Typography, Button, message, Card, Select } from 'antd';
-import { CopyOutlined } from '@ant-design/icons';
+import { Table, Tag, Typography, Button, message, Input, Select, Tooltip } from 'antd';
+import { CopyOutlined, SearchOutlined, FilterOutlined, EyeOutlined } from '@ant-design/icons';
 import api from '@/lib/api';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 const { Title } = Typography;
+const { Option } = Select;
 
 export default function ProposalsPage() {
     const [proposals, setProposals] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchText, setSearchText] = useState('');
+    const [platformFilter, setPlatformFilter] = useState('All');
 
     useEffect(() => {
         fetchProposals();
@@ -27,160 +30,139 @@ export default function ProposalsPage() {
         }
     };
 
+    const filteredProposals = proposals.filter(p => {
+        const matchesSearch = p.job_description?.toLowerCase().includes(searchText.toLowerCase()) ||
+            p.proposal_text?.toLowerCase().includes(searchText.toLowerCase());
+        const matchesPlatform = platformFilter === 'All' || p.platform === platformFilter;
+        return matchesSearch && matchesPlatform;
+    });
+
     const columns = [
         {
             title: 'Date',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (date) => moment(date).format('MMM D, YYYY'),
+            render: (date) => <span className="text-slate-500 font-medium">{dayjs(date).format('MMM D, YYYY')}</span>,
+            width: 120,
         },
         {
-            title: 'Platform',
-            dataIndex: 'platform',
-            key: 'platform',
-            render: (platform) => {
-                const color = platform === 'Upwork' ? 'green' : 'blue';
-                return <Tag color={color}>{platform}</Tag>;
-            }
-        },
-        {
-            title: 'Job Preview',
+            title: 'Proposal',
             dataIndex: 'job_description',
             key: 'job_description',
-            render: (text) => <span className="text-gray-500">{text.substring(0, 50)}...</span>,
+            render: (text, record) => (
+                <div>
+                    <div className="font-semibold text-slate-800 text-sm mb-1 truncate max-w-md">
+                        {text ? text.substring(0, 60) + "..." : "Generated Proposal"}
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <Tag color={record.platform === 'Upwork' ? 'green' : 'blue'} className="mr-0 rounded-md text-[10px] font-bold border-none px-1.5 py-0.5 uppercase">
+                            {record.platform}
+                        </Tag>
+                        <span className="text-xs text-slate-400">
+                            {record.proposal_text ? `${record.proposal_text.split(' ').length} words` : ''}
+                        </span>
+                    </div>
+                </div>
+            )
         },
         {
             title: 'Status',
             dataIndex: 'status',
             key: 'status',
+            width: 150,
             render: (status, record) => (
                 <Select
-                    defaultValue={status}
+                    defaultValue={status || 'generated'}
                     size="small"
-                    style={{ width: 100 }}
+                    className="w-28"
+                    bordered={false}
                     onChange={async (value) => {
                         try {
                             await api.put(`/proposals/${record.id}/status`, { status: value });
                             message.success('Status updated');
-                            // Optionally refresh or update local state
                         } catch (e) {
                             message.error('Failed to update');
                         }
                     }}
                 >
-                    <Select.Option value="generated">Draft</Select.Option>
-                    <Select.Option value="sent">Sent</Select.Option>
-                    <Select.Option value="viewed">Viewed</Select.Option>
-                    <Select.Option value="replied">Replied</Select.Option>
+                    <Option value="generated"><Tag color="default" className="w-full text-center m-0">Draft</Tag></Option>
+                    <Option value="sent"><Tag color="blue" className="w-full text-center m-0">Sent</Tag></Option>
+                    <Option value="replied"><Tag color="success" className="w-full text-center m-0">Replied</Tag></Option>
                 </Select>
             )
         },
         {
             title: 'Action',
             key: 'action',
+            width: 100,
             render: (_, record) => (
-                <Button
-                    icon={<CopyOutlined />}
-                    size="small"
-                    onClick={() => {
-                        navigator.clipboard.writeText(record.proposal_text);
-                        message.success('Copied!');
-                    }}
-                >
-                    Copy
-                </Button>
+                <div className="flex gap-2">
+                    <Tooltip title="Copy to Clipboard">
+                        <Button
+                            icon={<CopyOutlined />}
+                            size="small"
+                            type="text"
+                            className="text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                            onClick={() => {
+                                navigator.clipboard.writeText(record.proposal_text);
+                                message.success('Copied!');
+                            }}
+                        />
+                    </Tooltip>
+                    <Tooltip title="View Details">
+                        <Button
+                            icon={<EyeOutlined />}
+                            size="small"
+                            type="text"
+                            className="text-slate-400 hover:text-indigo-600 hover:bg-indigo-50"
+                        />
+                    </Tooltip>
+                </div>
             ),
         },
     ];
 
     return (
-        <div className="max-w-6xl mx-auto space-y-8 animate-fade-in pb-12">
-            <div>
-                <Title level={2} className="!text-white !mb-2 tracking-tight">Proposal History</Title>
-                <p className="text-slate-400 text-lg">Track and manage your generated proposals.</p>
-            </div>
-
-            <div className="glass-panel p-1 rounded-3xl overflow-hidden border border-white/10 relative">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-[100px] -mr-32 -mt-32 pointer-events-none"></div>
-
-                <div className="p-6 md:p-8 relative z-10">
-                    <Table
-                        columns={columns}
-                        dataSource={proposals}
-                        rowKey="id"
-                        loading={loading}
-                        pagination={{
-                            pageSize: 10,
-                            className: "custom-pagination"
-                        }}
-                        className="custom-table"
-                        rowClassName="custom-row"
+        <div className="max-w-6xl mx-auto pb-12 animate-fade-in">
+            <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <Title level={2} className="!text-slate-900 !mb-2 tracking-tight">Reply Log</Title>
+                    <p className="text-slate-500 text-lg">Track, manage, and optimize your outreach.</p>
+                </div>
+                <div className="flex gap-3">
+                    <Input
+                        placeholder="Search proposals..."
+                        prefix={<SearchOutlined className="text-slate-400" />}
+                        className="w-full md:w-64 !bg-white !border-slate-200 !rounded-lg"
+                        onChange={e => setSearchText(e.target.value)}
                     />
+                    <Select
+                        defaultValue="All"
+                        className="w-32"
+                        onChange={setPlatformFilter}
+                        size="middle"
+                    >
+                        <Option value="All">All Platforms</Option>
+                        <Option value="Upwork">Upwork</Option>
+                        <Option value="Fiverr">Fiverr</Option>
+                    </Select>
                 </div>
             </div>
 
-            <style jsx global>{`
-                .custom-table .ant-table {
-                    background: transparent !important;
-                    color: white !important;
-                }
-                .custom-table .ant-table-thead > tr > th {
-                    background: rgba(255, 255, 255, 0.05) !important;
-                    color: #94a3b8 !important;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
-                    font-weight: 600 !important;
-                    text-transform: uppercase !important;
-                    font-size: 0.75rem !important;
-                    letter-spacing: 0.05em !important;
-                }
-                .custom-table .ant-table-tbody > tr > td {
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-                    color: #e2e8f0 !important;
-                    transition: all 0.2s !important;
-                }
-                .custom-table .ant-table-tbody > tr:hover > td {
-                    background: rgba(255, 255, 255, 0.05) !important;
-                }
-                .custom-row:hover {
-                    cursor: pointer;
-                }
-                
-                /* Pagination */
-                .custom-pagination .ant-pagination-item {
-                    background: transparent !important;
-                    border-color: rgba(255, 255, 255, 0.2) !important;
-                }
-                .custom-pagination .ant-pagination-item a {
-                    color: #94a3b8 !important;
-                }
-                .custom-pagination .ant-pagination-item-active {
-                    background: rgba(99, 102, 241, 0.2) !important;
-                    border-color: #6366f1 !important;
-                }
-                .custom-pagination .ant-pagination-item-active a {
-                    color: white !important;
-                }
-                .custom-pagination .ant-pagination-prev .ant-pagination-item-link,
-                .custom-pagination .ant-pagination-next .ant-pagination-item-link {
-                    background: transparent !important;
-                    border-color: rgba(255, 255, 255, 0.2) !important;
-                    color: #94a3b8 !important;
-                }
-                
-                /* Select in Table */
-                .ant-select-dropdown {
-                    background-color: #0f172a !important;
-                    border: 1px solid rgba(255, 255, 255, 0.1) !important;
-                }
-                .ant-select:not(.ant-select-customize-input) .ant-select-selector {
-                    background-color: transparent !important;
-                    border-color: rgba(255, 255, 255, 0.2) !important;
-                    color: #e2e8f0 !important;
-                }
-                .ant-select-arrow {
-                    color: rgba(255, 255, 255, 0.5) !important;
-                }
-            `}</style>
+            <div className="saas-card overflow-hidden">
+                <Table
+                    columns={columns}
+                    dataSource={filteredProposals}
+                    rowKey="id"
+                    loading={loading}
+                    pagination={{
+                        pageSize: 10,
+                        showSizeChanger: false,
+                        showTotal: (total, range) => `${range[0]}-${range[1]} of ${total} items`
+                    }}
+                    rowClassName="hover:bg-slate-50 transition-colors"
+                />
+            </div>
         </div>
     );
 }
