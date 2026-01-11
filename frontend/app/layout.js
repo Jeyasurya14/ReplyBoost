@@ -14,7 +14,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-[#030712] text-slate-50 relative selection:bg-indigo-500/30 selection:text-indigo-200`}>
+      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-background text-foreground relative selection:bg-indigo-500/30 selection:text-indigo-200 cosmic-bg`}>
         <ConfigProvider
           theme={{
             algorithm: theme.darkAlgorithm,

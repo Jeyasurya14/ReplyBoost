@@ -74,18 +74,18 @@ export default function Dashboard() {
     const creditsLeft = Math.max(0, MAX_CREDITS - (user?.daily_usage || 0));
 
     return (
-        <div className="space-y-8 animate-fade-in">
+        <div className="space-y-8 animate-fade-in pb-10">
             {/* Welcome Section */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white mb-2">
+                    <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">
                         Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">{user?.email?.split('@')[0] || 'Freelancer'}</span>
                     </h1>
-                    <p className="text-slate-400">Here&apos;s your performance overview for today.</p>
+                    <p className="text-slate-400 text-lg">Here&apos;s your cosmic performance overview.</p>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-3">
-                    <div className="min-w-[8px] min-h-[8px] rounded-full bg-emerald-500 animate-pulse"></div>
-                    <span className="text-slate-300 text-sm font-medium">System Operational</span>
+                <div className="glass-panel px-4 py-2 rounded-full border border-emerald-500/20 flex items-center gap-3 bg-emerald-500/5">
+                    <div className="min-w-[8px] min-h-[8px] rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                    <span className="text-emerald-300 text-sm font-medium">System Operational</span>
                 </div>
             </div>
 
@@ -97,6 +97,7 @@ export default function Dashboard() {
                         value: stats.total_proposals,
                         icon: <SendOutlined />,
                         color: 'blue',
+                        gradient: 'from-blue-500 to-indigo-600',
                         subtext: 'Lifetime sent'
                     },
                     {
@@ -104,13 +105,15 @@ export default function Dashboard() {
                         value: `${stats.response_rate}%`,
                         icon: <CheckCircleOutlined />,
                         color: 'emerald',
+                        gradient: 'from-emerald-400 to-teal-500',
                         subtext: 'Global average: 5%'
                     },
                     {
                         title: 'Credits Left',
                         value: creditsLeft,
                         icon: <ThunderboltOutlined />,
-                        color: 'indigo',
+                        color: 'amber',
+                        gradient: 'from-amber-400 to-orange-500',
                         subtext: `Resets daily (${MAX_CREDITS} max)`
                     },
                     {
@@ -118,22 +121,33 @@ export default function Dashboard() {
                         value: stats.profile_views,
                         icon: <EyeOutlined />,
                         color: 'purple',
+                        gradient: 'from-purple-500 to-pink-600',
                         subtext: 'Past 30 days'
                     },
                 ].map((item, idx) => (
                     <Col xs={24} sm={12} lg={6} key={idx}>
-                        <div className="glass-card p-6 rounded-2xl border border-white/5 hover:border-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/10 transition-all duration-300 group h-full">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center text-xl bg-${item.color}-500/10 text-${item.color}-400 group-hover:scale-110 transition-transform`}>
+                        <div className="glass-card group relative overflow-hidden p-6 rounded-3xl h-full">
+                            <div className={`absolute -right-6 -top-6 w-32 h-32 bg-gradient-to-br ${item.gradient} opacity-10 blur-[40px] group-hover:opacity-20 transition-opacity duration-500`}></div>
+
+                            <div className="flex justify-between items-start mb-4 relative z-10">
+                                <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-2xl bg-gradient-to-br ${item.gradient} text-white shadow-lg shadow-${item.color}-500/20 group-hover:scale-110 transition-transform duration-300`}>
                                     {item.icon}
                                 </div>
-                                <div className="text-slate-500 hover:text-white cursor-pointer transition-colors">
+                                <div className="text-slate-500 hover:text-white cursor-pointer transition-colors bg-white/5 p-2 rounded-lg hover:bg-white/10">
                                     <RiseOutlined />
                                 </div>
                             </div>
-                            <div className="text-4xl font-bold text-white mb-2">{item.value}</div>
-                            <div className="text-slate-400 font-medium">{item.title}</div>
-                            <div className="text-slate-600 text-xs mt-2">{item.subtext}</div>
+
+                            <div className="relative z-10">
+                                <div className="text-4xl font-bold text-white mb-1 tracking-tight">{item.value}</div>
+                                <div className="text-slate-400 font-medium text-sm uppercase tracking-wider">{item.title}</div>
+                                <div className="mt-4 flex items-center gap-2 text-xs">
+                                    <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full font-medium">
+                                        +12%
+                                    </span>
+                                    <span className="text-slate-500">{item.subtext}</span>
+                                </div>
+                            </div>
                         </div>
                     </Col>
                 ))}
@@ -143,47 +157,61 @@ export default function Dashboard() {
             <Row gutter={[24, 24]}>
                 {/* Chart */}
                 <Col xs={24} lg={16}>
-                    <div className="glass-panel p-8 rounded-3xl h-[450px] border border-white/5 flex flex-col">
-                        <div className="flex justify-between items-center mb-8">
+                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-[80px] -mr-32 -mt-32"></div>
+
+                        <div className="flex justify-between items-center mb-8 relative z-10">
                             <div>
-                                <h3 className="text-xl font-bold text-white">Proposal Performance</h3>
+                                <h3 className="text-2xl font-bold text-white mb-1">Proposal Performance</h3>
                                 <p className="text-slate-500 text-sm">Proposals sent over the last 7 days</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <span className="w-3 h-3 rounded-full bg-indigo-500"></span>
+                                <span className="text-xs text-slate-400">Sent</span>
                             </div>
                         </div>
 
-                        <div className="flex-1 w-full min-h-0">
+                        <div className="flex-1 w-full min-h-0 relative z-10">
                             {stats.chart_data && stats.chart_data.length > 0 ? (
                                 <ResponsiveContainer width="100%" height="100%">
                                     <AreaChart data={stats.chart_data}>
                                         <defs>
                                             <linearGradient id="colorSent" x1="0" y1="0" x2="0" y2="1">
-                                                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
+                                                <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
                                                 <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                                             </linearGradient>
                                         </defs>
                                         <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                                         <XAxis
                                             dataKey="name"
-                                            stroke="#475569"
+                                            stroke="#64748b"
                                             fontSize={12}
                                             tickLine={false}
                                             axisLine={false}
+                                            tickMargin={10}
                                             tickFormatter={(value) => dayjs(value).format('MMM D')}
                                         />
-                                        <YAxis stroke="#475569" fontSize={12} tickLine={false} axisLine={false} />
+                                        <YAxis stroke="#64748b" fontSize={12} tickLine={false} axisLine={false} />
                                         <Tooltip
-                                            contentStyle={{ backgroundColor: '#0f172a', borderColor: 'rgba(255,255,255,0.1)', color: '#fff', borderRadius: '12px' }}
+                                            contentStyle={{
+                                                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                                                backdropFilter: 'blur(10px)',
+                                                borderColor: 'rgba(255,255,255,0.1)',
+                                                color: '#fff',
+                                                borderRadius: '12px',
+                                                boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)'
+                                            }}
                                             itemStyle={{ color: '#fff' }}
-                                            cursor={{ stroke: 'rgba(255,255,255,0.1)' }}
+                                            cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 2 }}
                                         />
                                         <Area
                                             type="monotone"
                                             dataKey="sent"
-                                            stroke="#6366f1"
-                                            strokeWidth={3}
+                                            stroke="#818cf8"
+                                            strokeWidth={4}
                                             fillOpacity={1}
                                             fill="url(#colorSent)"
-                                            activeDot={{ r: 6, strokeWidth: 0 }}
+                                            activeDot={{ r: 8, strokeWidth: 0, fill: '#fff', stroke: '#6366f1' }}
                                         />
                                     </AreaChart>
                                 </ResponsiveContainer>
@@ -198,29 +226,38 @@ export default function Dashboard() {
 
                 {/* Recent Activity */}
                 <Col xs={24} lg={8}>
-                    <div className="glass-panel p-6 rounded-3xl h-[450px] border border-white/5 flex flex-col">
-                        <h3 className="text-xl font-bold text-white mb-6">Recent Activity</h3>
+                    <div className="glass-panel p-8 rounded-3xl h-[500px] flex flex-col border-t border-white/10">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-white">Recent Activity</h3>
+                            <Link href="/dashboard/proposals" className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors">View All</Link>
+                        </div>
+
                         <div className="space-y-4 flex-1 overflow-y-auto pr-2 custom-scrollbar">
                             {recentActivity.length > 0 ? (
                                 recentActivity.map((proposal, i) => (
-                                    <div key={i} className="flex gap-4 p-4 border border-white/5 bg-white/[0.02] hover:bg-white/5 rounded-xl transition-colors cursor-pointer group">
-                                        <div className="w-10 h-10 rounded-full bg-indigo-500/10 flex items-center justify-center shrink-0 group-hover:bg-indigo-500/20 transition-colors">
-                                            <SendOutlined className="text-indigo-400" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <div className="text-slate-200 font-medium text-sm mb-1 truncate">
-                                                {proposal.job_description ?
-                                                    (proposal.job_description.substring(0, 40) + (proposal.job_description.length > 40 ? '...' : ''))
-                                                    : 'Generated Proposal'}
+                                    <div key={i} className="group relative p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/5 transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+                                        <div className="flex gap-4">
+                                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500/20 to-purple-500/20 flex items-center justify-center shrink-0 border border-indigo-500/10 group-hover:border-indigo-500/30 transition-colors">
+                                                <SendOutlined className="text-indigo-400 group-hover:scale-110 transition-transform" />
                                             </div>
-                                            <div className="text-slate-500 text-xs">
-                                                {dayjs(proposal.created_at).fromNow()}
+                                            <div className="min-w-0 flex-1">
+                                                <div className="text-slate-200 font-medium text-sm mb-1 truncate group-hover:text-white transition-colors">
+                                                    {proposal.job_description ?
+                                                        (proposal.job_description.substring(0, 40) + (proposal.job_description.length > 40 ? '...' : ''))
+                                                        : 'Generated Proposal'}
+                                                </div>
+                                                <div className="flex justify-between items-center">
+                                                    <span className="text-slate-500 text-xs">{dayjs(proposal.created_at).fromNow()}</span>
+                                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-white/5 text-slate-400 border border-white/5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        Details
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 ))
                             ) : (
-                                <div className="h-full flex items-center justify-center p-8">
+                                <div className="h-full flex items-center justify-center">
                                     <Empty description={<span className="text-slate-500">No proposals generated yet</span>} image={Empty.PRESENTED_IMAGE_SIMPLE} />
                                 </div>
                             )}
