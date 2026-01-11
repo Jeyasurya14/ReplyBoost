@@ -66,7 +66,7 @@ export default function Login() {
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">With AI Magic</span>
                         </h1>
                         <p className="text-xl text-slate-400 leading-relaxed">
-                            "I went from a 5% reply rate to over 30% in just one week. ReplyBoost paid for itself in my first job."
+                            &quot;I went from a 5% reply rate to over 30% in just one week. ReplyBoost paid for itself in my first job.&quot;
                         </p>
                     </div>
                     <div className="flex items-center gap-4">

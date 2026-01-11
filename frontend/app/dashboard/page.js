@@ -39,7 +39,7 @@ export default function Dashboard() {
             <div className="flex flex-col md:flex-row justify-between items-end gap-4">
                 <div>
                     <h1 className="text-3xl font-bold text-white mb-2">Welcome back, Freelancer</h1>
-                    <p className="text-slate-400">Here's what's happening with your proposals today.</p>
+                    <p className="text-slate-400">Here&apos;s what&apos;s happening with your proposals today.</p>
                 </div>
             </div>
 
@@ -115,7 +115,7 @@ export default function Dashboard() {
                                 <div key={i} className="flex gap-4 py-4 border-b border-white/5 last:border-0 hover:bg-white/5 px-2 rounded-lg transition-colors cursor-pointer">
                                     <div className="w-2 h-2 mt-2 rounded-full bg-indigo-500 shrink-0"></div>
                                     <div>
-                                        <div className="text-slate-200 font-medium text-sm mb-1">Generated proposal for "React Native Dev needed"</div>
+                                        <div className="text-slate-200 font-medium text-sm mb-1">Generated proposal for &quot;React Native Dev needed&quot;</div>
                                         <div className="text-slate-500 text-xs">2 hours ago</div>
                                     </div>
                                 </div>
