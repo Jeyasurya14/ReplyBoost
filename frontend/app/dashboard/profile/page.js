@@ -50,7 +50,7 @@ export default function ProfilePage() {
                 </div>
                 <div>
                     <Title level={2} className="!text-white !mb-1 tracking-tight">Your Profile</Title>
-                    <p className="text-slate-400 text-lg">Customize your AI's writing style and context.</p>
+                    <p className="text-slate-400 text-lg">Customize your AI&apos;s writing style and context.</p>
                 </div>
             </div>
 
