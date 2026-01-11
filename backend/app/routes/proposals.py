@@ -31,7 +31,7 @@ def update_proposal_status(proposal_id: str, update: StatusUpdate, current_user:
          return {"message": "No change or not found"}
     return {"status": "updated"}
 
-@router.get("/analytics")
+@router.get("/proposals/analytics")
 def get_analytics(current_user: dict = Depends(get_current_user)):
     user_id = current_user["_id"]
     
